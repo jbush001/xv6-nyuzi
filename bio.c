@@ -100,7 +100,7 @@ bread(uint dev, uint blockno)
 
   b = bget(dev, blockno);
   if((b->flags & B_VALID) == 0) {
-    iderw(b);
+    block_dev_io(b);
   }
   return b;
 }
@@ -112,7 +112,7 @@ bwrite(struct buf *b)
   if(!holdingsleep(&b->lock))
     panic("bwrite");
   b->flags |= B_DIRTY;
-  iderw(b);
+  block_dev_io(b);
 }
 
 // Release a locked buffer.
@@ -136,7 +136,7 @@ brelse(struct buf *b)
     bcache.head.next->prev = b;
     bcache.head.next = b;
   }
-  
+
   release(&bcache.lock);
 }
 //PAGEBREAK!

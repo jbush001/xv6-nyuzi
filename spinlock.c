@@ -3,7 +3,7 @@
 #include "types.h"
 #include "defs.h"
 #include "param.h"
-#include "x86.h"
+#include "nyuzi.h"
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
@@ -28,9 +28,16 @@ acquire(struct spinlock *lk)
   if(holding(lk))
     panic("acquire");
 
-  // The xchg is atomic.
-  while(xchg(&lk->locked, 1) != 0)
-    ;
+  do
+  {
+      // Wait while local copy is locked, to avoid creating traffic on
+      // the L2 interconnect.
+      while (lk->locked)
+          ;
+
+      // Attempt to grab lock
+  }
+  while (!__sync_bool_compare_and_swap(&lk->locked, 0, 1));
 
   // Tell the C compiler and the processor to not move loads or stores
   // past this point, to ensure that the critical section's memory
@@ -60,29 +67,17 @@ release(struct spinlock *lk)
   __sync_synchronize();
 
   // Release the lock, equivalent to lk->locked = 0.
-  // This code can't use a C assignment, since it might
-  // not be atomic. A real OS would use C atomics here.
-  asm volatile("movl $0, %0" : "+m" (lk->locked) : );
+  __sync_lock_release(&lk->locked);
 
   popcli();
 }
 
-// Record the current call stack in pcs[] by following the %ebp chain.
+// Record the current call stack in pcs[]
 void
 getcallerpcs(void *v, uint pcs[])
 {
-  uint *ebp;
-  int i;
-
-  ebp = (uint*)v - 2;
-  for(i = 0; i < 10; i++){
-    if(ebp == 0 || ebp < (uint*)KERNBASE || ebp == (uint*)0xffffffff)
-      break;
-    pcs[i] = ebp[1];     // saved %eip
-    ebp = (uint*)ebp[0]; // saved %ebp
-  }
-  for(; i < 10; i++)
-    pcs[i] = 0;
+  // XXX hard to do with frame pointer elimination
+  // this is for debug only
 }
 
 // Check whether this cpu is holding the lock.
@@ -102,17 +97,17 @@ pushcli(void)
 {
   int eflags;
 
-  eflags = readeflags();
+  eflags = readflags();
   cli();
   if(mycpu()->ncli == 0)
-    mycpu()->intena = eflags & FL_IF;
+    mycpu()->intena = eflags & FLAG_INTERRUPT_EN;
   mycpu()->ncli += 1;
 }
 
 void
 popcli(void)
 {
-  if(readeflags()&FL_IF)
+  if(readflags() & FLAG_INTERRUPT_EN)
     panic("popcli - interruptible");
   if(--mycpu()->ncli < 0)
     panic("popcli");

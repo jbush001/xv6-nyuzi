@@ -4,7 +4,7 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
-#include "x86.h"
+#include "nyuzi.h"
 #include "syscall.h"
 
 // User code makes a system call with INT T_SYSCALL.
@@ -46,10 +46,11 @@ fetchstr(uint addr, char **pp)
 }
 
 // Fetch the nth 32-bit system call argument.
+// XXX arguments aren't passed on stack...
 int
 argint(int n, int *ip)
 {
-  return fetchint((myproc()->tf->esp) + 4 + 4*n, ip);
+  return fetchint((myproc()->tf->gpr[REG_SP]) + 4 + 4*n, ip);
 }
 
 // Fetch the nth word-sized system call argument as a pointer
@@ -60,7 +61,7 @@ argptr(int n, char **pp, int size)
 {
   int i;
   struct proc *curproc = myproc();
- 
+
   if(argint(n, &i) < 0)
     return -1;
   if(size < 0 || (uint)i >= curproc->sz || (uint)i+size > curproc->sz)
@@ -105,27 +106,27 @@ extern int sys_write(void);
 extern int sys_uptime(void);
 
 static int (*syscalls[])(void) = {
-[SYS_fork]    sys_fork,
-[SYS_exit]    sys_exit,
-[SYS_wait]    sys_wait,
-[SYS_pipe]    sys_pipe,
-[SYS_read]    sys_read,
-[SYS_kill]    sys_kill,
-[SYS_exec]    sys_exec,
-[SYS_fstat]   sys_fstat,
-[SYS_chdir]   sys_chdir,
-[SYS_dup]     sys_dup,
-[SYS_getpid]  sys_getpid,
-[SYS_sbrk]    sys_sbrk,
-[SYS_sleep]   sys_sleep,
-[SYS_uptime]  sys_uptime,
-[SYS_open]    sys_open,
-[SYS_write]   sys_write,
-[SYS_mknod]   sys_mknod,
-[SYS_unlink]  sys_unlink,
-[SYS_link]    sys_link,
-[SYS_mkdir]   sys_mkdir,
-[SYS_close]   sys_close,
+[SYS_fork]    = sys_fork,
+[SYS_exit]    = sys_exit,
+[SYS_wait]    = sys_wait,
+[SYS_pipe]    = sys_pipe,
+[SYS_read]    = sys_read,
+[SYS_kill]    = sys_kill,
+[SYS_exec]    = sys_exec,
+[SYS_fstat]   = sys_fstat,
+[SYS_chdir]   = sys_chdir,
+[SYS_dup]     = sys_dup,
+[SYS_getpid]  = sys_getpid,
+[SYS_sbrk]    = sys_sbrk,
+[SYS_sleep]   = sys_sleep,
+[SYS_uptime]  = sys_uptime,
+[SYS_open]    = sys_open,
+[SYS_write]   = sys_write,
+[SYS_mknod]   = sys_mknod,
+[SYS_unlink]  = sys_unlink,
+[SYS_link]    = sys_link,
+[SYS_mkdir]   = sys_mkdir,
+[SYS_close]   = sys_close,
 };
 
 void
@@ -134,12 +135,12 @@ syscall(void)
   int num;
   struct proc *curproc = myproc();
 
-  num = curproc->tf->eax;
+  num = curproc->tf->gpr[0];
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
-    curproc->tf->eax = syscalls[num]();
+    curproc->tf->gpr[0] = syscalls[num]();
   } else {
     cprintf("%d %s: unknown sys call %d\n",
             curproc->pid, curproc->name, num);
-    curproc->tf->eax = -1;
+    curproc->tf->gpr[0] = -1;
   }
 }

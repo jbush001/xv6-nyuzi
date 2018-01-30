@@ -4,7 +4,7 @@
 #include "mmu.h"
 #include "proc.h"
 #include "defs.h"
-#include "x86.h"
+#include "nyuzi.h"
 #include "elf.h"
 
 int
@@ -65,7 +65,7 @@ exec(char *path, char **argv)
   sz = PGROUNDUP(sz);
   if((sz = allocuvm(pgdir, sz, sz + 2*PGSIZE)) == 0)
     goto bad;
-  clearpteu(pgdir, (char*)(sz - 2*PGSIZE));
+  setptes(pgdir, (char*)(sz - 2*PGSIZE));
   sp = sz;
 
   // Push argument strings, prepare rest of stack in ustack.
@@ -97,8 +97,8 @@ exec(char *path, char **argv)
   oldpgdir = curproc->pgdir;
   curproc->pgdir = pgdir;
   curproc->sz = sz;
-  curproc->tf->eip = elf.entry;  // main
-  curproc->tf->esp = sp;
+  curproc->tf->pc = elf.entry;  // main
+  curproc->tf->gpr[REG_SP] = sp;
   switchuvm(curproc);
   freevm(oldpgdir);
   return 0;

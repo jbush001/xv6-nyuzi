@@ -2,7 +2,7 @@
 #include "stat.h"
 #include "fcntl.h"
 #include "user.h"
-#include "x86.h"
+#include "nyuzi.h"
 
 char*
 strcpy(char *s, char *t)
@@ -36,7 +36,11 @@ strlen(char *s)
 void*
 memset(void *dst, int c, uint n)
 {
-  stosb(dst, c, n);
+  int i;
+
+  for (i = 0; i < n; i++)
+    ((char*) dst)[i] = c;
+
   return dst;
 }
 

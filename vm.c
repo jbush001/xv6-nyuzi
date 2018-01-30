@@ -1,7 +1,7 @@
 #include "param.h"
 #include "types.h"
 #include "defs.h"
-#include "x86.h"
+#include "nyuzi.h"
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
@@ -9,25 +9,7 @@
 
 extern char data[];  // defined by kernel.ld
 pde_t *kpgdir;  // for use in scheduler()
-
-// Set up CPU's kernel segment descriptors.
-// Run once on entry on each CPU.
-void
-seginit(void)
-{
-  struct cpu *c;
-
-  // Map "logical" addresses to virtual addresses using identity map.
-  // Cannot share a CODE descriptor for both kernel and user
-  // because it would have to have DPL_USR, but the CPU forbids
-  // an interrupt from CPL=0 to DPL=3.
-  c = &cpus[cpuid()];
-  c->gdt[SEG_KCODE] = SEG(STA_X|STA_R, 0, 0xffffffff, 0);
-  c->gdt[SEG_KDATA] = SEG(STA_W, 0, 0xffffffff, 0);
-  c->gdt[SEG_UCODE] = SEG(STA_X|STA_R, 0, 0xffffffff, DPL_USER);
-  c->gdt[SEG_UDATA] = SEG(STA_W, 0, 0xffffffff, DPL_USER);
-  lgdt(c->gdt, sizeof(c->gdt));
-}
+unsigned int trap_kernel_stack;
 
 // Return the address of the PTE in page table pgdir
 // that corresponds to virtual address va.  If alloc!=0,
@@ -49,7 +31,7 @@ walkpgdir(pde_t *pgdir, const void *va, int alloc)
     // The permissions here are overly generous, but they can
     // be further restricted by the permissions in the page table
     // entries, if necessary.
-    *pde = V2P(pgtab) | PTE_P | PTE_W | PTE_U;
+    *pde = V2P(pgtab) | PTE_P | PTE_W;
   }
   return &pgtab[PTX(va)];
 }
@@ -87,11 +69,6 @@ mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
 //
 // setupkvm() and exec() set up every page table like this:
 //
-//   0..KERNBASE: user memory (text+data+stack+heap), mapped to
-//                phys memory allocated by the kernel
-//   KERNBASE..KERNBASE+EXTMEM: mapped to 0..EXTMEM (for I/O space)
-//   KERNBASE+EXTMEM..data: mapped to EXTMEM..V2P(data)
-//                for the kernel's instructions and r/o data
 //   data..KERNBASE+PHYSTOP: mapped to V2P(data)..PHYSTOP,
 //                                  rw data + free physical memory
 //   0xfe000000..0: mapped direct (devices such as ioapic)
@@ -108,10 +85,9 @@ static struct kmap {
   uint phys_end;
   int perm;
 } kmap[] = {
- { (void*)KERNBASE, 0,             EXTMEM,    PTE_W}, // I/O space
- { (void*)KERNLINK, V2P(KERNLINK), V2P(data), 0},     // kern text+rodata
- { (void*)data,     V2P(data),     PHYSTOP,   PTE_W}, // kern data+memory
- { (void*)DEVSPACE, DEVSPACE,      0,         PTE_W}, // more devices
+ { (void*)KERNBASE, V2P(KERNBASE), V2P(data), 0},     // kern text+rodata
+ { (void*)data,     V2P(data),     PHYSTOP,   PTE_W | PTE_S}, // kern data+memory
+ { (void*)DEVSPACE, DEVSPACE,      0,         PTE_W | PTE_S}, // more devices
 };
 
 // Set up kernel part of a page table.
@@ -132,6 +108,7 @@ setupkvm(void)
       freevm(pgdir);
       return 0;
     }
+
   return pgdir;
 }
 
@@ -149,10 +126,11 @@ kvmalloc(void)
 void
 switchkvm(void)
 {
-  lcr3(V2P(kpgdir));   // switch to the kernel page table
+  // switch to the kernel page table
+  __builtin_nyuzi_write_control_reg(CR_PAGE_DIR_BASE, V2P(kpgdir));
 }
 
-// Switch TSS and h/w page table to correspond to process p.
+// Switch h/w page table to correspond to process p.
 void
 switchuvm(struct proc *p)
 {
@@ -164,16 +142,10 @@ switchuvm(struct proc *p)
     panic("switchuvm: no pgdir");
 
   pushcli();
-  mycpu()->gdt[SEG_TSS] = SEG16(STS_T32A, &mycpu()->ts,
-                                sizeof(mycpu()->ts)-1, 0);
-  mycpu()->gdt[SEG_TSS].s = 0;
-  mycpu()->ts.ss0 = SEG_KDATA << 3;
-  mycpu()->ts.esp0 = (uint)p->kstack + KSTACKSIZE;
-  // setting IOPL=0 in eflags *and* iomb beyond the tss segment limit
-  // forbids I/O instructions (e.g., inb and outb) from user space
-  mycpu()->ts.iomb = (ushort) 0xFFFF;
-  ltr(SEG_TSS << 3);
-  lcr3(V2P(p->pgdir));  // switch to process's address space
+  trap_kernel_stack = (uint)p->kstack + KSTACKSIZE;
+  __builtin_nyuzi_write_control_reg(CR_PAGE_DIR_BASE, V2P(p->pgdir));
+  // XXX need to set process ASID
+
   popcli();
 }
 
@@ -188,7 +160,7 @@ inituvm(pde_t *pgdir, char *init, uint sz)
     panic("inituvm: more than a page");
   mem = kalloc();
   memset(mem, 0, PGSIZE);
-  mappages(pgdir, 0, PGSIZE, V2P(mem), PTE_W|PTE_U);
+  mappages(pgdir, 0, PGSIZE, V2P(mem), PTE_W);
   memmove(mem, init, sz);
 }
 
@@ -238,7 +210,7 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       return 0;
     }
     memset(mem, 0, PGSIZE);
-    if(mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W|PTE_U) < 0){
+    if(mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W) < 0){
       cprintf("allocuvm out of memory (2)\n");
       deallocuvm(pgdir, newsz, oldsz);
       kfree(mem);
@@ -297,17 +269,17 @@ freevm(pde_t *pgdir)
   kfree((char*)pgdir);
 }
 
-// Clear PTE_U on a page. Used to create an inaccessible
+// Set as supervisor. Used to create an inaccessible
 // page beneath the user stack.
 void
-clearpteu(pde_t *pgdir, char *uva)
+setptes(pde_t *pgdir, char *uva)
 {
   pte_t *pte;
 
   pte = walkpgdir(pgdir, uva, 0);
   if(pte == 0)
-    panic("clearpteu");
-  *pte &= ~PTE_U;
+    panic("setptes");
+  *pte |= PTE_S;
 }
 
 // Given a parent process's page table, create a copy
@@ -352,14 +324,14 @@ uva2ka(pde_t *pgdir, char *uva)
   pte = walkpgdir(pgdir, uva, 0);
   if((*pte & PTE_P) == 0)
     return 0;
-  if((*pte & PTE_U) == 0)
+  if((*pte & PTE_S) != 0)
     return 0;
   return (char*)P2V(PTE_ADDR(*pte));
 }
 
 // Copy len bytes from p to user address va in page table pgdir.
 // Most useful when pgdir is not the current page table.
-// uva2ka ensures this only works for PTE_U pages.
+// uva2ka ensures this only works for user pages.
 int
 copyout(pde_t *pgdir, uint va, void *p, uint len)
 {

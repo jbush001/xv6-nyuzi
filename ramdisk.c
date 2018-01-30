@@ -6,7 +6,7 @@
 #include "param.h"
 #include "mmu.h"
 #include "proc.h"
-#include "x86.h"
+#include "nyuzi.h"
 #include "traps.h"
 #include "spinlock.h"
 #include "sleeplock.h"
@@ -19,7 +19,7 @@ static int disksize;
 static uchar *memdisk;
 
 void
-ideinit(void)
+block_dev_init(void)
 {
   memdisk = _binary_fs_img_start;
   disksize = (uint)_binary_fs_img_size/BSIZE;
@@ -36,18 +36,18 @@ ideintr(void)
 // If B_DIRTY is set, write buf to disk, clear B_DIRTY, set B_VALID.
 // Else if B_VALID is not set, read buf from disk, set B_VALID.
 void
-iderw(struct buf *b)
+block_dev_io(struct buf *b)
 {
   uchar *p;
 
   if(!holdingsleep(&b->lock))
-    panic("iderw: buf not locked");
+    panic("block_dev_io: buf not locked");
   if((b->flags & (B_VALID|B_DIRTY)) == B_VALID)
-    panic("iderw: nothing to do");
+    panic("block_dev_io: nothing to do");
   if(b->dev != 1)
-    panic("iderw: request not for disk 1");
+    panic("block_dev_io: request not for disk 1");
   if(b->blockno >= disksize)
-    panic("iderw: block out of range");
+    panic("block_dev_io: block out of range");
 
   p = memdisk + b->blockno*BSIZE;
 

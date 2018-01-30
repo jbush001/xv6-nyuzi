@@ -1549,6 +1549,7 @@ sbrktest(void)
 void
 validateint(int *p)
 {
+#if 0
   int res;
   asm("mov %%esp, %%ebx\n\t"
       "mov %3, %%esp\n\t"
@@ -1557,6 +1558,7 @@ validateint(int *p)
       "=a" (res) :
       "a" (SYS_sleep), "n" (T_SYSCALL), "c" (p) :
       "ebx");
+#endif
 }
 
 void
@@ -1698,6 +1700,7 @@ fsfull()
 void
 uio()
 {
+#if 0
   #define RTC_ADDR 0x70
   #define RTC_DATA 0x71
 
@@ -1722,6 +1725,7 @@ uio()
   }
   wait();
   printf(1, "uio test done\n");
+#endif
 }
 
 void argptest()

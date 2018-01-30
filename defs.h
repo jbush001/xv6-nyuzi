@@ -53,10 +53,9 @@ int             readi(struct inode*, char*, uint, uint);
 void            stati(struct inode*, struct stat*);
 int             writei(struct inode*, char*, uint, uint);
 
-// ide.c
-void            ideinit(void);
-void            ideintr(void);
-void            iderw(struct buf*);
+// sd_card.c, ramdisk.c
+void            block_dev_init(void);
+void            block_dev_io(struct buf*);
 
 // ioapic.c
 void            ioapicenable(int irq, int cpu);
@@ -74,10 +73,8 @@ void            kbdintr(void);
 
 // lapic.c
 void            cmostime(struct rtcdate *r);
-int             lapicid(void);
 extern volatile uint*    lapic;
 void            lapiceoi(void);
-void            lapicinit(void);
 void            lapicstartap(uchar, uint);
 void            microdelay(int);
 
@@ -184,7 +181,7 @@ pde_t*          copyuvm(pde_t*, uint);
 void            switchuvm(struct proc*);
 void            switchkvm(void);
 int             copyout(pde_t*, uint, void*, uint);
-void            clearpteu(pde_t *pgdir, char *uva);
+void            setptes(pde_t *pgdir, char *uva);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
