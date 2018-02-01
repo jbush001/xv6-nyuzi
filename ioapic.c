@@ -14,11 +14,16 @@ ioapicinit(void)
 void
 ioapicenable(int irq, int cpu)
 {
-  if (cpu != cpuid())
-    panic("can't enable interrupt on other CPU");
+  // XXX cpu is ignored
 
   __builtin_nyuzi_write_control_reg(CR_TRAP_HANDLER, (int) trap_entry);
 
   __builtin_nyuzi_write_control_reg(CR_INTERRUPT_MASK,
     __builtin_nyuzi_read_control_reg(CR_INTERRUPT_MASK) | (1 << irq));
 }
+
+void ack_interrupt(int irq)
+{
+  __builtin_nyuzi_write_control_reg(CR_INTERRUPT_ACK, 1 << irq);
+}
+

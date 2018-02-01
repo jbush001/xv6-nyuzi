@@ -32,6 +32,7 @@ main(void)
   block_dev_init();       // disk
   startothers();   // start other processors
   kinit2(P2V(1*1024*1024), P2V(PHYSTOP)); // must come after startothers()
+  timerinit();
   userinit();      // first user process
   mpmain();        // finish this processor's setup
 }

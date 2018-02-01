@@ -17,11 +17,6 @@ microdelay(int us)
 {
 }
 
-#define CMOS_PORT    0x70
-#define CMOS_RETURN  0x71
-
-// Start additional processor running entry code at addr.
-// See Appendix B of MultiProcessor Specification.
 void
 lapicstartap(uchar apicid, uint addr)
 {

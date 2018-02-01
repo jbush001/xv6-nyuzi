@@ -31,16 +31,6 @@ tvinit(void)
   initlock(&tickslock, "time");
 }
 
-void
-idtinit(void)
-{
-}
-
-void ack_interrupt(int irq)
-{
-  __builtin_nyuzi_write_control_reg(CR_INTERRUPT_ACK, 1 << irq);
-}
-
 static void dispatch_interrupt(int intnum)
 {
   switch (intnum)
@@ -151,8 +141,12 @@ trap(struct trapframe *tf)
 
   // Force process to give up CPU on clock tick.
   // If interrupts were on while locks held, would need to check nlock.
-  if(myproc() && myproc()->state == RUNNING && intnum == IRQ_TIMER)
+  if(myproc()
+    && myproc()->state == RUNNING
+    && (trap_cause & 0xf) == TT_INTERRUPT
+    && intnum == IRQ_TIMER) {
     yield();
+  }
 
   // Check if the process has been killed since we yielded
   if(myproc() && myproc()->killed && (tf->flags & FLAG_SUPERVISOR_EN) == 0)
