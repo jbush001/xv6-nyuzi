@@ -106,19 +106,15 @@ cprintf(char *fmt, ...)
 void
 panic(char *s)
 {
-  int i;
-  uint pcs[10];
-
   cli();
   cons.locking = 0;
   // use lapiccpunum so that we can call panic from mycpu()
   cprintf("panic: ");
   cprintf(s);
   cprintf("\n");
-  getcallerpcs(&s, pcs);
-  for(i=0; i<10; i++)
-    cprintf(" %p", pcs[i]);
+
   panicked = 1; // freeze other CPU
+  REGISTERS[REG_THREAD_HALT] = 0xffffffff;
   for(;;)
     ;
 }
@@ -256,6 +252,6 @@ consoleinit(void)
 
   devsw[CONSOLE].write = consolewrite;
   devsw[CONSOLE].read = consoleread;
-  cons.locking = 1;
+//  cons.locking = 1;
 }
 

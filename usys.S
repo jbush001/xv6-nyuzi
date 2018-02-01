@@ -4,7 +4,7 @@
 #define SYSCALL(name) \
   .globl name; \
   name: \
-    move s0, SYS_ ## name; \
+    move s8, SYS_ ## name; \
     syscall; \
     ret
 

@@ -16,14 +16,14 @@ extern int ncpu;
 // Saved registers for kernel context switches.
 
 struct context {
-  uint ra;
-  uint fp;
-  uint gp;
-  uint s27;
-  uint s26;
-  uint s25;
-  uint s24;
   uint vector_regs[16 * 32];
+  uint s24;
+  uint s25;
+  uint s26;
+  uint s27;
+  uint gp;
+  uint fp;
+  uint ra;
 };
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };

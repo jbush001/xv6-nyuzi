@@ -32,11 +32,11 @@ CC = $(TOOLROOT)/clang
 AS = $(TOOLROOT)//clang
 LD = $(TOOLROOT)//ld.lld
 OBJDUMP = $(TOOLROOT)/llvm-objdump
-CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -O2 -Wall -MD -ggdb -m32 -Werror -fno-omit-frame-pointer
+CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -O3 -Wall -MD -m32
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 
 kernel.hex: $(OBJS) entry.o initcode
-	$(LD) $(LDFLAGS) -T kernel.ld -o kernel.elf --image-base=0x80000000 entry.o $(OBJS) # initcode
+	$(LD) $(LDFLAGS) -T kernel.ld -o kernel.elf --image-base=0x80000000 entry.o $(OBJS) -format binary initcode
 	$(OBJDUMP) -d kernel.elf > kernel.lst
 	$(TOOLROOT)/elf2hex -b 0x80000000 -o kernel.hex kernel.elf
 

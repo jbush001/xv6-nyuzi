@@ -66,6 +66,7 @@ start_thread_n:
     lea s0, mpmain
     b s0
 
+.data
 .globl mp_init_stack
 mp_init_stack: .long  0
 

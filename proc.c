@@ -16,7 +16,7 @@ static struct proc *initproc;
 
 int nextpid = 1;
 extern void forkret(void);
-extern void trapret(void);
+extern void jump_to_user_proc(struct trapframe *tf);
 
 static void wakeup1(void *chan);
 
@@ -89,7 +89,6 @@ found:
   // Leave room for trap frame.
   sp -= TRAPFRAME_SIZE;
   p->tf = (struct trapframe*) sp;
-  p->tf->pc = (uint) trapret;
 
   sp -= CONTEXT_SIZE;
   p->context = (struct context*)sp;
@@ -105,14 +104,14 @@ void
 userinit(void)
 {
   struct proc *p;
-//  extern char _binary_initcode_start[], _binary_initcode_size[];
+  extern char _binary_initcode_start[], _binary_initcode_size[];
 
   p = allocproc();
 
   initproc = p;
   if((p->pgdir = setupkvm()) == 0)
     panic("userinit: out of memory?");
-//  inituvm(p->pgdir, _binary_initcode_start, (int)_binary_initcode_size);
+  inituvm(p->pgdir, _binary_initcode_start, (int)_binary_initcode_size);
   p->sz = PGSIZE;
   memset(p->tf, 0, sizeof(*p->tf));
   p->tf->flags = FLAG_INTERRUPT_EN | FLAG_MMU_EN;
@@ -353,11 +352,9 @@ sched(void)
     panic("sched locks");
   if(p->state == RUNNING)
     panic("sched running");
-#if 0
-  // XXX read flags control register
-  if(readeflags()&FL_IF)
+  if(readflags()&FLAG_INTERRUPT_EN)
     panic("sched interruptible");
-#endif
+
   intena = mycpu()->intena;
   swtch(&p->context, mycpu()->scheduler);
   mycpu()->intena = intena;
@@ -391,7 +388,7 @@ forkret(void)
     initlog(ROOTDEV);
   }
 
-  // Return to "caller", actually trapret (see allocproc).
+  jump_to_user_proc(myproc()->tf);
 }
 
 // Atomically release lock and sleep on chan.

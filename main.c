@@ -17,20 +17,21 @@ extern char end[]; // first address after kernel loaded from ELF file
 int
 main(void)
 {
-  kinit1(end, P2V(4*1024*1024)); // phys page allocator
+  kinit1(end, P2V(1*1024*1024)); // phys page allocator
   kvmalloc();      // kernel page table
   mpinit();        // detect other processors
   picinit();       // disable pic
   ioapicinit();    // another interrupt controller
   consoleinit();   // console hardware
   uartinit();      // serial port
+
   pinit();         // process table
   tvinit();        // trap vectors
   binit();         // buffer cache
   fileinit();      // file table
   block_dev_init();       // disk
   startothers();   // start other processors
-  kinit2(P2V(4*1024*1024), P2V(PHYSTOP)); // must come after startothers()
+  kinit2(P2V(1*1024*1024), P2V(PHYSTOP)); // must come after startothers()
   userinit();      // first user process
   mpmain();        // finish this processor's setup
 }
@@ -39,9 +40,7 @@ main(void)
 void
 mpmain(void)
 {
-  cprintf("cpu%d: starting %d\n", cpuid(), cpuid());
-
-  // XXX turn on interrupts
+    // XXX turn on interrupts
 
   mycpu()->started = 1; // tell startothers() we're up
   scheduler();     // start running processes
@@ -56,8 +55,10 @@ startothers(void)
 {
   struct cpu *c;
   char *stack;
+  int cpuid;
 
   for(c = cpus; c < cpus+ncpu; c++){
+    cpuid = c - cpus;
     if(c == mycpu())  // We've started already.
       continue;
 
@@ -68,9 +69,12 @@ startothers(void)
     mp_init_stack = (unsigned int) (stack + KSTACKSIZE);
 
     // XXX write control register to start thread
+    REGISTERS[REG_THREAD_RESUME] = 1 << cpuid;
 
     // wait for cpu to finish mpmain()
     while(c->started == 0)
       ;
+
+    cprintf("started cpu %d\n", cpuid);
   }
 }

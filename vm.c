@@ -85,10 +85,11 @@ static struct kmap {
   uint phys_end;
   int perm;
 } kmap[] = {
- { (void*)KERNBASE, V2P(KERNBASE), V2P(data), 0},     // kern text+rodata
+ { (void*)KERNBASE, V2P(KERNBASE), V2P(data), PTE_X | PTE_S},     // kern text+rodata
  { (void*)data,     V2P(data),     PHYSTOP,   PTE_W | PTE_S}, // kern data+memory
  { (void*)DEVSPACE, DEVSPACE,      0,         PTE_W | PTE_S}, // more devices
 };
+
 
 // Set up kernel part of a page table.
 pde_t*
@@ -128,6 +129,7 @@ switchkvm(void)
 {
   // switch to the kernel page table
   __builtin_nyuzi_write_control_reg(CR_PAGE_DIR_BASE, V2P(kpgdir));
+  __asm__("tlbinvalall");
 }
 
 // Switch h/w page table to correspond to process p.
@@ -144,7 +146,7 @@ switchuvm(struct proc *p)
   pushcli();
   trap_kernel_stack = (uint)p->kstack + KSTACKSIZE;
   __builtin_nyuzi_write_control_reg(CR_PAGE_DIR_BASE, V2P(p->pgdir));
-  // XXX need to set process ASID
+  __asm__("tlbinvalall");
 
   popcli();
 }
@@ -160,7 +162,7 @@ inituvm(pde_t *pgdir, char *init, uint sz)
     panic("inituvm: more than a page");
   mem = kalloc();
   memset(mem, 0, PGSIZE);
-  mappages(pgdir, 0, PGSIZE, V2P(mem), PTE_W);
+  mappages(pgdir, 0, PGSIZE, V2P(mem), PTE_W | PTE_X);
   memmove(mem, init, sz);
 }
 
@@ -210,7 +212,7 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       return 0;
     }
     memset(mem, 0, PGSIZE);
-    if(mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W) < 0){
+    if(mappages(pgdir, (char*)a, PGSIZE, V2P(mem), PTE_W | PTE_X) < 0){
       cprintf("allocuvm out of memory (2)\n");
       deallocuvm(pgdir, newsz, oldsz);
       kfree(mem);
@@ -267,19 +269,6 @@ freevm(pde_t *pgdir)
     }
   }
   kfree((char*)pgdir);
-}
-
-// Set as supervisor. Used to create an inaccessible
-// page beneath the user stack.
-void
-setptes(pde_t *pgdir, char *uva)
-{
-  pte_t *pte;
-
-  pte = walkpgdir(pgdir, uva, 0);
-  if(pte == 0)
-    panic("setptes");
-  *pte |= PTE_S;
 }
 
 // Given a parent process's page table, create a copy

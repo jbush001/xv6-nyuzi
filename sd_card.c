@@ -132,11 +132,10 @@ void
 block_dev_io(struct buf *b)
 {
   if(!holdingsleep(&b->lock))
-  panic("block_dev_io: buf not locked");
+    panic("block_dev_io: buf not locked");
+
   if((b->flags & (B_VALID|B_DIRTY)) == B_VALID)
-  panic("block_dev_io: nothing to do");
-  if(b->dev != 0)
-  panic("block_dev_io: ide disk 1 not present");
+    panic("block_dev_io: nothing to do");
 
   acquire(&idelock);  //DOC:acquire-lock
 

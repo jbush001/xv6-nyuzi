@@ -25,8 +25,11 @@ void
 acquire(struct spinlock *lk)
 {
   pushcli(); // disable interrupts to avoid deadlock.
+
   if(holding(lk))
+  {
     panic("acquire");
+  }
 
   do
   {
@@ -67,7 +70,7 @@ release(struct spinlock *lk)
   __sync_synchronize();
 
   // Release the lock, equivalent to lk->locked = 0.
-  __sync_lock_release(&lk->locked);
+  lk->locked = 0;
 
   popcli();
 }
@@ -95,12 +98,12 @@ holding(struct spinlock *lock)
 void
 pushcli(void)
 {
-  int eflags;
+  int flags;
 
-  eflags = readflags();
+  flags = readflags();
   cli();
   if(mycpu()->ncli == 0)
-    mycpu()->intena = eflags & FLAG_INTERRUPT_EN;
+    mycpu()->intena = flags & FLAG_INTERRUPT_EN;
   mycpu()->ncli += 1;
 }
 

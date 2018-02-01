@@ -65,9 +65,10 @@ exec(char *path, char **argv)
   sz = PGROUNDUP(sz);
   if((sz = allocuvm(pgdir, sz, sz + 2*PGSIZE)) == 0)
     goto bad;
-  setptes(pgdir, (char*)(sz - 2*PGSIZE));
-  sp = sz;
+  sp = sz - 64;
 
+#if 0
+  // XXX nyuzi need to update trapframe to update registers
   // Push argument strings, prepare rest of stack in ustack.
   for(argc = 0; argv[argc]; argc++) {
     if(argc >= MAXARG)
@@ -86,6 +87,7 @@ exec(char *path, char **argv)
   sp -= (3+argc+1) * 4;
   if(copyout(pgdir, sp, ustack, (3+argc+1)*4) < 0)
     goto bad;
+#endif
 
   // Save program name for debugging.
   for(last=s=path; *s; s++)
@@ -101,6 +103,7 @@ exec(char *path, char **argv)
   curproc->tf->gpr[REG_SP] = sp;
   switchuvm(curproc);
   freevm(oldpgdir);
+  __asm__("tlbinvalall");
   return 0;
 
  bad:

@@ -14,8 +14,13 @@
 struct cpu cpus[NCPU];
 int ncpu;
 
+// XXX there is no way to detect number of CPUs currently
 void
 mpinit(void)
 {
-  ncpu = 4; // XXX there is no way to detect this currently
+#if 0
+  ncpu = 4;
+#else
+  ncpu = 1; // For debugging
+#endif
 }

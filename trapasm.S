@@ -10,7 +10,6 @@
 //
 
                         .globl trap_entry
-                        .globl trapret
                         .type trap_entry, @function
 trap_entry:             setcr s0, CR_SCRATCHPAD0        // Save s0 in scratchpad
                         setcr s1, CR_SCRATCHPAD1        // Save s1 in scratchpad
@@ -127,6 +126,9 @@ trapret:                load_32 s1, 4(sp)
 
 trap_kernel_stack_addr: .long trap_kernel_stack
 
+                        .globl jump_to_user_proc
+jump_to_user_proc:      move sp, s0
+                        b trapret
 
 //
 // Jump to a user mode task.

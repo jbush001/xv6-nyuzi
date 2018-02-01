@@ -5,12 +5,12 @@
 #include "traps.h"
 
 
-# exec(init, argv)
-.globl start
-start:
-  move s0, SYS_exec
-  lea s1, init
-  lea s2, argv
+.globl _start
+_start:
+  # exec(init, argv)
+  lea s0, init
+  lea s1, argv
+  move s8, SYS_exec
   syscall
 
 # for(;;) exit();

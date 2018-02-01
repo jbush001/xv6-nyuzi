@@ -45,12 +45,18 @@ fetchstr(uint addr, char **pp)
   return -1;
 }
 
+
 // Fetch the nth 32-bit system call argument.
-// XXX arguments aren't passed on stack...
 int
 argint(int n, int *ip)
 {
-  return fetchint((myproc()->tf->gpr[REG_SP]) + 4 + 4*n, ip);
+  // First 8 values are passed in registers. For more arguments,
+  // read from stack.
+  if (n < 8) {
+    *ip = myproc()->tf->gpr[n];
+    return 0;
+  } else
+    return fetchint(myproc()->tf->gpr[REG_SP] + (n - 8) * 4, ip);
 }
 
 // Fetch the nth word-sized system call argument as a pointer
@@ -80,6 +86,7 @@ argstr(int n, char **pp)
   int addr;
   if(argint(n, &addr) < 0)
     return -1;
+
   return fetchstr(addr, pp);
 }
 
@@ -132,15 +139,16 @@ static int (*syscalls[])(void) = {
 void
 syscall(void)
 {
-  int num;
+  unsigned int num;
   struct proc *curproc = myproc();
 
-  num = curproc->tf->gpr[0];
+  num = curproc->tf->gpr[8];
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     curproc->tf->gpr[0] = syscalls[num]();
   } else {
     cprintf("%d %s: unknown sys call %d\n",
             curproc->pid, curproc->name, num);
+    panic("");
     curproc->tf->gpr[0] = -1;
   }
 }
