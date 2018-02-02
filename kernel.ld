@@ -8,9 +8,9 @@ SECTIONS
 {
 	/* Link the kernel at this address: "." means the current address */
         /* Must be equal to KERNLINK */
-	. = 0x80001000;
+	. = 0x80000100;
 
-	.text : AT(0x80001000) {
+	.text : AT(0x80000100) {
 		*(.text .stub .text.* .gnu.linkonce.t.*)
 	}
 

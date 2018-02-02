@@ -1,6 +1,6 @@
 // Memory layout
 
-#define PHYSTOP 0x100000           // Top physical memory
+#define PHYSTOP 0x1000000           // Top physical memory
 #define DEVSPACE 0xFFFF0000         // Other devices are at high addresses
 
 // Key addresses for address space layout (see kmap in vm.c for layout)

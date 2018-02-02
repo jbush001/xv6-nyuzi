@@ -17,7 +17,7 @@ extern char end[]; // first address after kernel loaded from ELF file
 int
 main(void)
 {
-  kinit1(end, P2V(1*1024*1024)); // phys page allocator
+  kinit1(end, P2V(4*1024*1024)); // phys page allocator
   kvmalloc();      // kernel page table
   mpinit();        // detect other processors
   picinit();       // disable pic
@@ -31,7 +31,7 @@ main(void)
   fileinit();      // file table
   block_dev_init();       // disk
   startothers();   // start other processors
-  kinit2(P2V(1*1024*1024), P2V(PHYSTOP)); // must come after startothers()
+  kinit2(P2V(4*1024*1024), P2V(PHYSTOP)); // must come after startothers()
   timerinit();
   userinit();      // first user process
   mpmain();        // finish this processor's setup

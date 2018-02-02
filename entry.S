@@ -74,262 +74,153 @@ mp_init_stack: .long  0
 
 .align 0x1000
 entrypgtab:
-  .long 0x00000000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00001000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00002000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00003000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00004000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00005000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00006000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00007000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00008000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00009000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0000a000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0000b000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0000c000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0000d000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0000e000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0000f000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00010000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00011000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00012000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00013000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00014000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00015000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00016000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00017000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00018000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00019000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0001a000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0001b000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0001c000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0001d000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0001e000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0001f000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00020000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00021000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00022000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00023000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00024000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00025000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00026000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00027000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00028000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00029000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0002a000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0002b000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0002c000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0002d000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0002e000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0002f000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00030000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00031000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00032000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00033000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00034000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00035000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00036000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00037000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00038000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00039000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0003a000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0003b000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0003c000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0003d000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0003e000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0003f000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00040000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00041000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00042000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00043000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00044000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00045000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00046000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00047000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00048000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00049000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0004a000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0004b000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0004c000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0004d000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0004e000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0004f000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00050000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00051000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00052000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00053000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00054000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00055000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00056000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00057000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00058000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00059000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0005a000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0005b000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0005c000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0005d000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0005e000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0005f000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00060000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00061000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00062000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00063000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00064000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00065000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00066000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00067000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00068000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00069000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0006a000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0006b000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0006c000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0006d000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0006e000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0006f000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00070000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00071000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00072000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00073000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00074000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00075000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00076000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00077000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00078000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00079000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0007a000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0007b000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0007c000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0007d000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0007e000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0007f000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00080000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00081000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00082000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00083000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00084000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00085000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00086000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00087000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00088000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00089000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0008a000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0008b000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0008c000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0008d000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0008e000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0008f000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00090000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00091000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00092000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00093000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00094000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00095000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00096000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00097000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00098000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x00099000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0009a000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0009b000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0009c000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0009d000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0009e000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x0009f000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000a0000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000a1000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000a2000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000a3000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000a4000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000a5000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000a6000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000a7000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000a8000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000a9000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000aa000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000ab000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000ac000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000ad000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000ae000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000af000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000b0000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000b1000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000b2000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000b3000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000b4000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000b5000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000b6000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000b7000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000b8000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000b9000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000ba000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000bb000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000bc000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000bd000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000be000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000bf000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000c0000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000c1000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000c2000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000c3000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000c4000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000c5000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000c6000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000c7000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000c8000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000c9000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000ca000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000cb000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000cc000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000cd000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000ce000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000cf000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000d0000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000d1000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000d2000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000d3000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000d4000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000d5000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000d6000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000d7000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000d8000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000d9000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000da000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000db000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000dc000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000dd000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000de000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000df000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000e0000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000e1000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000e2000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000e3000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000e4000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000e5000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000e6000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000e7000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000e8000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000e9000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000ea000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000eb000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000ec000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000ed000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000ee000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000ef000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000f0000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000f1000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000f2000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000f3000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000f4000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000f5000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000f6000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000f7000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000f8000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000f9000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000fa000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000fb000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000fc000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000fd000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000fe000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
-  .long 0x000ff000 | PTE_P | PTE_W | PTE_X | PTE_S | PTE_G
+  .long 0x1f, 0x101f, 0x201f, 0x301f, 0x401f, 0x501f, 0x601f
+  .long 0x701f, 0x801f, 0x901f, 0xa01f, 0xb01f, 0xc01f, 0xd01f
+  .long 0xe01f, 0xf01f, 0x1001f, 0x1101f, 0x1201f, 0x1301f, 0x1401f
+  .long 0x1501f, 0x1601f, 0x1701f, 0x1801f, 0x1901f, 0x1a01f, 0x1b01f
+  .long 0x1c01f, 0x1d01f, 0x1e01f, 0x1f01f, 0x2001f, 0x2101f, 0x2201f
+  .long 0x2301f, 0x2401f, 0x2501f, 0x2601f, 0x2701f, 0x2801f, 0x2901f
+  .long 0x2a01f, 0x2b01f, 0x2c01f, 0x2d01f, 0x2e01f, 0x2f01f, 0x3001f
+  .long 0x3101f, 0x3201f, 0x3301f, 0x3401f, 0x3501f, 0x3601f, 0x3701f
+  .long 0x3801f, 0x3901f, 0x3a01f, 0x3b01f, 0x3c01f, 0x3d01f, 0x3e01f
+  .long 0x3f01f, 0x4001f, 0x4101f, 0x4201f, 0x4301f, 0x4401f, 0x4501f
+  .long 0x4601f, 0x4701f, 0x4801f, 0x4901f, 0x4a01f, 0x4b01f, 0x4c01f
+  .long 0x4d01f, 0x4e01f, 0x4f01f, 0x5001f, 0x5101f, 0x5201f, 0x5301f
+  .long 0x5401f, 0x5501f, 0x5601f, 0x5701f, 0x5801f, 0x5901f, 0x5a01f
+  .long 0x5b01f, 0x5c01f, 0x5d01f, 0x5e01f, 0x5f01f, 0x6001f, 0x6101f
+  .long 0x6201f, 0x6301f, 0x6401f, 0x6501f, 0x6601f, 0x6701f, 0x6801f
+  .long 0x6901f, 0x6a01f, 0x6b01f, 0x6c01f, 0x6d01f, 0x6e01f, 0x6f01f
+  .long 0x7001f, 0x7101f, 0x7201f, 0x7301f, 0x7401f, 0x7501f, 0x7601f
+  .long 0x7701f, 0x7801f, 0x7901f, 0x7a01f, 0x7b01f, 0x7c01f, 0x7d01f
+  .long 0x7e01f, 0x7f01f, 0x8001f, 0x8101f, 0x8201f, 0x8301f, 0x8401f
+  .long 0x8501f, 0x8601f, 0x8701f, 0x8801f, 0x8901f, 0x8a01f, 0x8b01f
+  .long 0x8c01f, 0x8d01f, 0x8e01f, 0x8f01f, 0x9001f, 0x9101f, 0x9201f
+  .long 0x9301f, 0x9401f, 0x9501f, 0x9601f, 0x9701f, 0x9801f, 0x9901f
+  .long 0x9a01f, 0x9b01f, 0x9c01f, 0x9d01f, 0x9e01f, 0x9f01f, 0xa001f
+  .long 0xa101f, 0xa201f, 0xa301f, 0xa401f, 0xa501f, 0xa601f, 0xa701f
+  .long 0xa801f, 0xa901f, 0xaa01f, 0xab01f, 0xac01f, 0xad01f, 0xae01f
+  .long 0xaf01f, 0xb001f, 0xb101f, 0xb201f, 0xb301f, 0xb401f, 0xb501f
+  .long 0xb601f, 0xb701f, 0xb801f, 0xb901f, 0xba01f, 0xbb01f, 0xbc01f
+  .long 0xbd01f, 0xbe01f, 0xbf01f, 0xc001f, 0xc101f, 0xc201f, 0xc301f
+  .long 0xc401f, 0xc501f, 0xc601f, 0xc701f, 0xc801f, 0xc901f, 0xca01f
+  .long 0xcb01f, 0xcc01f, 0xcd01f, 0xce01f, 0xcf01f, 0xd001f, 0xd101f
+  .long 0xd201f, 0xd301f, 0xd401f, 0xd501f, 0xd601f, 0xd701f, 0xd801f
+  .long 0xd901f, 0xda01f, 0xdb01f, 0xdc01f, 0xdd01f, 0xde01f, 0xdf01f
+  .long 0xe001f, 0xe101f, 0xe201f, 0xe301f, 0xe401f, 0xe501f, 0xe601f
+  .long 0xe701f, 0xe801f, 0xe901f, 0xea01f, 0xeb01f, 0xec01f, 0xed01f
+  .long 0xee01f, 0xef01f, 0xf001f, 0xf101f, 0xf201f, 0xf301f, 0xf401f
+  .long 0xf501f, 0xf601f, 0xf701f, 0xf801f, 0xf901f, 0xfa01f, 0xfb01f
+  .long 0xfc01f, 0xfd01f, 0xfe01f, 0xff01f, 0x10001f, 0x10101f, 0x10201f
+  .long 0x10301f, 0x10401f, 0x10501f, 0x10601f, 0x10701f, 0x10801f, 0x10901f
+  .long 0x10a01f, 0x10b01f, 0x10c01f, 0x10d01f, 0x10e01f, 0x10f01f, 0x11001f
+  .long 0x11101f, 0x11201f, 0x11301f, 0x11401f, 0x11501f, 0x11601f, 0x11701f
+  .long 0x11801f, 0x11901f, 0x11a01f, 0x11b01f, 0x11c01f, 0x11d01f, 0x11e01f
+  .long 0x11f01f, 0x12001f, 0x12101f, 0x12201f, 0x12301f, 0x12401f, 0x12501f
+  .long 0x12601f, 0x12701f, 0x12801f, 0x12901f, 0x12a01f, 0x12b01f, 0x12c01f
+  .long 0x12d01f, 0x12e01f, 0x12f01f, 0x13001f, 0x13101f, 0x13201f, 0x13301f
+  .long 0x13401f, 0x13501f, 0x13601f, 0x13701f, 0x13801f, 0x13901f, 0x13a01f
+  .long 0x13b01f, 0x13c01f, 0x13d01f, 0x13e01f, 0x13f01f, 0x14001f, 0x14101f
+  .long 0x14201f, 0x14301f, 0x14401f, 0x14501f, 0x14601f, 0x14701f, 0x14801f
+  .long 0x14901f, 0x14a01f, 0x14b01f, 0x14c01f, 0x14d01f, 0x14e01f, 0x14f01f
+  .long 0x15001f, 0x15101f, 0x15201f, 0x15301f, 0x15401f, 0x15501f, 0x15601f
+  .long 0x15701f, 0x15801f, 0x15901f, 0x15a01f, 0x15b01f, 0x15c01f, 0x15d01f
+  .long 0x15e01f, 0x15f01f, 0x16001f, 0x16101f, 0x16201f, 0x16301f, 0x16401f
+  .long 0x16501f, 0x16601f, 0x16701f, 0x16801f, 0x16901f, 0x16a01f, 0x16b01f
+  .long 0x16c01f, 0x16d01f, 0x16e01f, 0x16f01f, 0x17001f, 0x17101f, 0x17201f
+  .long 0x17301f, 0x17401f, 0x17501f, 0x17601f, 0x17701f, 0x17801f, 0x17901f
+  .long 0x17a01f, 0x17b01f, 0x17c01f, 0x17d01f, 0x17e01f, 0x17f01f, 0x18001f
+  .long 0x18101f, 0x18201f, 0x18301f, 0x18401f, 0x18501f, 0x18601f, 0x18701f
+  .long 0x18801f, 0x18901f, 0x18a01f, 0x18b01f, 0x18c01f, 0x18d01f, 0x18e01f
+  .long 0x18f01f, 0x19001f, 0x19101f, 0x19201f, 0x19301f, 0x19401f, 0x19501f
+  .long 0x19601f, 0x19701f, 0x19801f, 0x19901f, 0x19a01f, 0x19b01f, 0x19c01f
+  .long 0x19d01f, 0x19e01f, 0x19f01f, 0x1a001f, 0x1a101f, 0x1a201f, 0x1a301f
+  .long 0x1a401f, 0x1a501f, 0x1a601f, 0x1a701f, 0x1a801f, 0x1a901f, 0x1aa01f
+  .long 0x1ab01f, 0x1ac01f, 0x1ad01f, 0x1ae01f, 0x1af01f, 0x1b001f, 0x1b101f
+  .long 0x1b201f, 0x1b301f, 0x1b401f, 0x1b501f, 0x1b601f, 0x1b701f, 0x1b801f
+  .long 0x1b901f, 0x1ba01f, 0x1bb01f, 0x1bc01f, 0x1bd01f, 0x1be01f, 0x1bf01f
+  .long 0x1c001f, 0x1c101f, 0x1c201f, 0x1c301f, 0x1c401f, 0x1c501f, 0x1c601f
+  .long 0x1c701f, 0x1c801f, 0x1c901f, 0x1ca01f, 0x1cb01f, 0x1cc01f, 0x1cd01f
+  .long 0x1ce01f, 0x1cf01f, 0x1d001f, 0x1d101f, 0x1d201f, 0x1d301f, 0x1d401f
+  .long 0x1d501f, 0x1d601f, 0x1d701f, 0x1d801f, 0x1d901f, 0x1da01f, 0x1db01f
+  .long 0x1dc01f, 0x1dd01f, 0x1de01f, 0x1df01f, 0x1e001f, 0x1e101f, 0x1e201f
+  .long 0x1e301f, 0x1e401f, 0x1e501f, 0x1e601f, 0x1e701f, 0x1e801f, 0x1e901f
+  .long 0x1ea01f, 0x1eb01f, 0x1ec01f, 0x1ed01f, 0x1ee01f, 0x1ef01f, 0x1f001f
+  .long 0x1f101f, 0x1f201f, 0x1f301f, 0x1f401f, 0x1f501f, 0x1f601f, 0x1f701f
+  .long 0x1f801f, 0x1f901f, 0x1fa01f, 0x1fb01f, 0x1fc01f, 0x1fd01f, 0x1fe01f
+  .long 0x1ff01f, 0x20001f, 0x20101f, 0x20201f, 0x20301f, 0x20401f, 0x20501f
+  .long 0x20601f, 0x20701f, 0x20801f, 0x20901f, 0x20a01f, 0x20b01f, 0x20c01f
+  .long 0x20d01f, 0x20e01f, 0x20f01f, 0x21001f, 0x21101f, 0x21201f, 0x21301f
+  .long 0x21401f, 0x21501f, 0x21601f, 0x21701f, 0x21801f, 0x21901f, 0x21a01f
+  .long 0x21b01f, 0x21c01f, 0x21d01f, 0x21e01f, 0x21f01f, 0x22001f, 0x22101f
+  .long 0x22201f, 0x22301f, 0x22401f, 0x22501f, 0x22601f, 0x22701f, 0x22801f
+  .long 0x22901f, 0x22a01f, 0x22b01f, 0x22c01f, 0x22d01f, 0x22e01f, 0x22f01f
+  .long 0x23001f, 0x23101f, 0x23201f, 0x23301f, 0x23401f, 0x23501f, 0x23601f
+  .long 0x23701f, 0x23801f, 0x23901f, 0x23a01f, 0x23b01f, 0x23c01f, 0x23d01f
+  .long 0x23e01f, 0x23f01f, 0x24001f, 0x24101f, 0x24201f, 0x24301f, 0x24401f
+  .long 0x24501f, 0x24601f, 0x24701f, 0x24801f, 0x24901f, 0x24a01f, 0x24b01f
+  .long 0x24c01f, 0x24d01f, 0x24e01f, 0x24f01f, 0x25001f, 0x25101f, 0x25201f
+  .long 0x25301f, 0x25401f, 0x25501f, 0x25601f, 0x25701f, 0x25801f, 0x25901f
+  .long 0x25a01f, 0x25b01f, 0x25c01f, 0x25d01f, 0x25e01f, 0x25f01f, 0x26001f
+  .long 0x26101f, 0x26201f, 0x26301f, 0x26401f, 0x26501f, 0x26601f, 0x26701f
+  .long 0x26801f, 0x26901f, 0x26a01f, 0x26b01f, 0x26c01f, 0x26d01f, 0x26e01f
+  .long 0x26f01f, 0x27001f, 0x27101f, 0x27201f, 0x27301f, 0x27401f, 0x27501f
+  .long 0x27601f, 0x27701f, 0x27801f, 0x27901f, 0x27a01f, 0x27b01f, 0x27c01f
+  .long 0x27d01f, 0x27e01f, 0x27f01f, 0x28001f, 0x28101f, 0x28201f, 0x28301f
+  .long 0x28401f, 0x28501f, 0x28601f, 0x28701f, 0x28801f, 0x28901f, 0x28a01f
+  .long 0x28b01f, 0x28c01f, 0x28d01f, 0x28e01f, 0x28f01f, 0x29001f, 0x29101f
+  .long 0x29201f, 0x29301f, 0x29401f, 0x29501f, 0x29601f, 0x29701f, 0x29801f
+  .long 0x29901f, 0x29a01f, 0x29b01f, 0x29c01f, 0x29d01f, 0x29e01f, 0x29f01f
+  .long 0x2a001f, 0x2a101f, 0x2a201f, 0x2a301f, 0x2a401f, 0x2a501f, 0x2a601f
+  .long 0x2a701f, 0x2a801f, 0x2a901f, 0x2aa01f, 0x2ab01f, 0x2ac01f, 0x2ad01f
+  .long 0x2ae01f, 0x2af01f, 0x2b001f, 0x2b101f, 0x2b201f, 0x2b301f, 0x2b401f
+  .long 0x2b501f, 0x2b601f, 0x2b701f, 0x2b801f, 0x2b901f, 0x2ba01f, 0x2bb01f
+  .long 0x2bc01f, 0x2bd01f, 0x2be01f, 0x2bf01f, 0x2c001f, 0x2c101f, 0x2c201f
+  .long 0x2c301f, 0x2c401f, 0x2c501f, 0x2c601f, 0x2c701f, 0x2c801f, 0x2c901f
+  .long 0x2ca01f, 0x2cb01f, 0x2cc01f, 0x2cd01f, 0x2ce01f, 0x2cf01f, 0x2d001f
+  .long 0x2d101f, 0x2d201f, 0x2d301f, 0x2d401f, 0x2d501f, 0x2d601f, 0x2d701f
+  .long 0x2d801f, 0x2d901f, 0x2da01f, 0x2db01f, 0x2dc01f, 0x2dd01f, 0x2de01f
+  .long 0x2df01f, 0x2e001f, 0x2e101f, 0x2e201f, 0x2e301f, 0x2e401f, 0x2e501f
+  .long 0x2e601f, 0x2e701f, 0x2e801f, 0x2e901f, 0x2ea01f, 0x2eb01f, 0x2ec01f
+  .long 0x2ed01f, 0x2ee01f, 0x2ef01f, 0x2f001f, 0x2f101f, 0x2f201f, 0x2f301f
+  .long 0x2f401f, 0x2f501f, 0x2f601f, 0x2f701f, 0x2f801f, 0x2f901f, 0x2fa01f
+  .long 0x2fb01f, 0x2fc01f, 0x2fd01f, 0x2fe01f, 0x2ff01f, 0x30001f, 0x30101f
+  .long 0x30201f, 0x30301f, 0x30401f, 0x30501f, 0x30601f, 0x30701f, 0x30801f
+  .long 0x30901f, 0x30a01f, 0x30b01f, 0x30c01f, 0x30d01f, 0x30e01f, 0x30f01f
+  .long 0x31001f, 0x31101f, 0x31201f, 0x31301f, 0x31401f, 0x31501f, 0x31601f
+  .long 0x31701f, 0x31801f, 0x31901f, 0x31a01f, 0x31b01f, 0x31c01f, 0x31d01f
+  .long 0x31e01f, 0x31f01f, 0x32001f, 0x32101f, 0x32201f, 0x32301f, 0x32401f
+  .long 0x32501f, 0x32601f, 0x32701f, 0x32801f, 0x32901f, 0x32a01f, 0x32b01f
+  .long 0x32c01f, 0x32d01f, 0x32e01f, 0x32f01f, 0x33001f, 0x33101f, 0x33201f
+  .long 0x33301f, 0x33401f, 0x33501f, 0x33601f, 0x33701f, 0x33801f, 0x33901f
+  .long 0x33a01f, 0x33b01f, 0x33c01f, 0x33d01f, 0x33e01f, 0x33f01f, 0x34001f
+  .long 0x34101f, 0x34201f, 0x34301f, 0x34401f, 0x34501f, 0x34601f, 0x34701f
+  .long 0x34801f, 0x34901f, 0x34a01f, 0x34b01f, 0x34c01f, 0x34d01f, 0x34e01f
+  .long 0x34f01f, 0x35001f, 0x35101f, 0x35201f, 0x35301f, 0x35401f, 0x35501f
+  .long 0x35601f, 0x35701f, 0x35801f, 0x35901f, 0x35a01f, 0x35b01f, 0x35c01f
+  .long 0x35d01f, 0x35e01f, 0x35f01f, 0x36001f, 0x36101f, 0x36201f, 0x36301f
+  .long 0x36401f, 0x36501f, 0x36601f, 0x36701f, 0x36801f, 0x36901f, 0x36a01f
+  .long 0x36b01f, 0x36c01f, 0x36d01f, 0x36e01f, 0x36f01f, 0x37001f, 0x37101f
+  .long 0x37201f, 0x37301f, 0x37401f, 0x37501f, 0x37601f, 0x37701f, 0x37801f
+  .long 0x37901f, 0x37a01f, 0x37b01f, 0x37c01f, 0x37d01f, 0x37e01f, 0x37f01f
+  .long 0x38001f, 0x38101f, 0x38201f, 0x38301f, 0x38401f, 0x38501f, 0x38601f
+  .long 0x38701f, 0x38801f, 0x38901f, 0x38a01f, 0x38b01f, 0x38c01f, 0x38d01f
+  .long 0x38e01f, 0x38f01f, 0x39001f, 0x39101f, 0x39201f, 0x39301f, 0x39401f
+  .long 0x39501f, 0x39601f, 0x39701f, 0x39801f, 0x39901f, 0x39a01f, 0x39b01f
+  .long 0x39c01f, 0x39d01f, 0x39e01f, 0x39f01f, 0x3a001f, 0x3a101f, 0x3a201f
+  .long 0x3a301f, 0x3a401f, 0x3a501f, 0x3a601f, 0x3a701f, 0x3a801f, 0x3a901f
+  .long 0x3aa01f, 0x3ab01f, 0x3ac01f, 0x3ad01f, 0x3ae01f, 0x3af01f, 0x3b001f
+  .long 0x3b101f, 0x3b201f, 0x3b301f, 0x3b401f, 0x3b501f, 0x3b601f, 0x3b701f
+  .long 0x3b801f, 0x3b901f, 0x3ba01f, 0x3bb01f, 0x3bc01f, 0x3bd01f, 0x3be01f
+  .long 0x3bf01f, 0x3c001f, 0x3c101f, 0x3c201f, 0x3c301f, 0x3c401f, 0x3c501f
+  .long 0x3c601f, 0x3c701f, 0x3c801f, 0x3c901f, 0x3ca01f, 0x3cb01f, 0x3cc01f
+  .long 0x3cd01f, 0x3ce01f, 0x3cf01f, 0x3d001f, 0x3d101f, 0x3d201f, 0x3d301f
+  .long 0x3d401f, 0x3d501f, 0x3d601f, 0x3d701f, 0x3d801f, 0x3d901f, 0x3da01f
+  .long 0x3db01f, 0x3dc01f, 0x3dd01f, 0x3de01f, 0x3df01f, 0x3e001f, 0x3e101f
+  .long 0x3e201f, 0x3e301f, 0x3e401f, 0x3e501f, 0x3e601f, 0x3e701f, 0x3e801f
+  .long 0x3e901f, 0x3ea01f, 0x3eb01f, 0x3ec01f, 0x3ed01f, 0x3ee01f, 0x3ef01f
+  .long 0x3f001f, 0x3f101f, 0x3f201f, 0x3f301f, 0x3f401f, 0x3f501f, 0x3f601f
+  .long 0x3f701f, 0x3f801f, 0x3f901f, 0x3fa01f, 0x3fb01f, 0x3fc01f, 0x3fd01f
+  .long 0x3fe01f, 0x3ff01f
 
 .align 0x1000
 iopgtab:
