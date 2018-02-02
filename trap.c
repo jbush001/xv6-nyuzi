@@ -130,7 +130,6 @@ trap(struct trapframe *tf)
     cprintf("user space process crashed:\n");
     dump_trap_frame(tf);
     myproc()->killed = 1;
-    panic("");
   }
 
   // Force process exit if it has been killed and is in user space.

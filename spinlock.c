@@ -49,7 +49,6 @@ acquire(struct spinlock *lk)
 
   // Record info about lock acquisition for debugging.
   lk->cpu = mycpu();
-  getcallerpcs(&lk, lk->pcs);
 }
 
 // Release the lock.
@@ -59,7 +58,6 @@ release(struct spinlock *lk)
   if(!holding(lk))
     panic("release");
 
-  lk->pcs[0] = 0;
   lk->cpu = 0;
 
   // Tell the C compiler and the processor to not move loads or stores
@@ -73,14 +71,6 @@ release(struct spinlock *lk)
   lk->locked = 0;
 
   popcli();
-}
-
-// Record the current call stack in pcs[]
-void
-getcallerpcs(void *v, uint pcs[])
-{
-  // XXX hard to do with frame pointer elimination
-  // this is for debug only
 }
 
 // Check whether this cpu is holding the lock.
