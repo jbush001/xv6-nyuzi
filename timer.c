@@ -4,6 +4,6 @@
 
 void timerinit(void)
 {
- REGISTERS[REG_TIMER_INTERVAL] = 5000000;
+ REGISTERS[REG_TIMER_INTERVAL] = 500000000;
  ioapicenable(IRQ_TIMER, 0);
 }

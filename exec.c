@@ -65,10 +65,8 @@ exec(char *path, char **argv)
   sz = PGROUNDUP(sz);
   if((sz = allocuvm(pgdir, sz, sz + 2*PGSIZE)) == 0)
     goto bad;
-  sp = sz - 64;
+  sp = sz;
 
-#if 0
-  // XXX nyuzi need to update trapframe to update registers
   // Push argument strings, prepare rest of stack in ustack.
   for(argc = 0; argv[argc]; argc++) {
     if(argc >= MAXARG)
@@ -76,18 +74,17 @@ exec(char *path, char **argv)
     sp = (sp - (strlen(argv[argc]) + 1)) & ~3;
     if(copyout(pgdir, sp, argv[argc], strlen(argv[argc]) + 1) < 0)
       goto bad;
-    ustack[3+argc] = sp;
+    ustack[argc] = sp;
   }
-  ustack[3+argc] = 0;
+  ustack[argc] = 0;
 
-  ustack[0] = 0xffffffff;  // fake return PC
-  ustack[1] = argc;
-  ustack[2] = sp - (argc+1)*4;  // argv pointer
-
-  sp -= (3+argc+1) * 4;
-  if(copyout(pgdir, sp, ustack, (3+argc+1)*4) < 0)
+  // Copy the argv array
+  sp -= (argc+1) * 4;
+  if(copyout(pgdir, sp, ustack, (argc+1)*4) < 0)
     goto bad;
-#endif
+
+  curproc->tf->gpr[1] = sp;  // argv pointer
+  sp &= ~63;  // align stack
 
   // Save program name for debugging.
   for(last=s=path; *s; s++)
@@ -104,7 +101,11 @@ exec(char *path, char **argv)
   switchuvm(curproc);
   freevm(oldpgdir);
   __asm__("tlbinvalall");
-  return 0;
+
+  // This looks a bit strange. When exec is successful, it doesn't return
+  // to the parent, but calls into main in the child. Normally a syscall
+  // returns the result in s0, but, in this case, s0 is the first argument.
+  return argc;
 
  bad:
   if(pgdir)

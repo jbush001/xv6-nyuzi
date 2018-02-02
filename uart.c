@@ -32,13 +32,12 @@ uartputc(int c)
 static int
 uartgetc(void)
 {
-  while ((REGISTERS[REG_UART_STATUS] & UART_RX_READY) == 0)
-      ;	// Wait for space
+  if ((REGISTERS[REG_UART_STATUS] & UART_RX_READY) == 0)
+    return -1;
 
   return REGISTERS[REG_UART_RX];
 }
 
-// XXX hook me up in traps
 void
 uartintr(void)
 {

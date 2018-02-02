@@ -101,10 +101,10 @@ UPROGS=\
 	_stressfs\
 	_usertests\
 	_wc\
-	_zombie\
+	_zombie
 
 fs.img: mkfs $(UPROGS)
-	./mkfs fs.img $(UPROGS)
+	./mkfs fs.img $(UPROGS) README.xv6
 
 -include *.d
 
