@@ -40,13 +40,10 @@ main(void)
 void
 mpmain(void)
 {
-    // XXX turn on interrupts
-
   mycpu()->started = 1; // tell startothers() we're up
   scheduler();     // start running processes
 }
 
-pde_t entrypgdir[1024];  // For entry.S
 extern unsigned int mp_init_stack;
 
 // Start the non-boot (AP) processors.
@@ -68,7 +65,7 @@ startothers(void)
     stack = kalloc();
     mp_init_stack = (unsigned int) (stack + KSTACKSIZE);
 
-    // XXX write control register to start thread
+    // write control register to start thread
     REGISTERS[REG_THREAD_RESUME] = 1 << cpuid;
 
     // wait for cpu to finish mpmain()

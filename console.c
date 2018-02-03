@@ -252,6 +252,6 @@ consoleinit(void)
 
   devsw[CONSOLE].write = consolewrite;
   devsw[CONSOLE].read = consoleread;
-//  cons.locking = 1;
+  cons.locking = 1;
 }
 

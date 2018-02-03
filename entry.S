@@ -19,7 +19,7 @@ _start = V2P_WO(entry)
 entry:
     # Set up TLB miss handler. This is a physical address, so need
     # to mask off virtual address to convert.
-    # XXX can't really use V2P here, because it doesn't work with lea
+    # XXX can't use V2P here, because it doesn't work with lea
     lea s0, tlb_miss_handler
     li s1, 0xffffff
     and s0, s0, s1      // Mask off high bits
@@ -61,8 +61,6 @@ start_thread_n:
     # waits until this has started before starting the next.
     lea s0, mp_init_stack
     load_32 sp, (s0)
-    add_i sp, sp, KSTACKSIZE
-
     lea s0, mpmain
     b s0
 

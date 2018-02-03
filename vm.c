@@ -9,7 +9,7 @@
 
 extern char data[];  // defined by kernel.ld
 pde_t *kpgdir;  // for use in scheduler()
-unsigned int trap_kernel_stack;
+unsigned int trap_kernel_stack[NCPU];
 
 // Return the address of the PTE in page table pgdir
 // that corresponds to virtual address va.  If alloc!=0,
@@ -144,7 +144,7 @@ switchuvm(struct proc *p)
     panic("switchuvm: no pgdir");
 
   pushcli();
-  trap_kernel_stack = (uint)p->kstack + KSTACKSIZE;
+  trap_kernel_stack[cpuid()] = (uint)p->kstack + KSTACKSIZE;
   __builtin_nyuzi_write_control_reg(CR_PAGE_DIR_BASE, V2P(p->pgdir));
   __asm__("tlbinvalall");
 
