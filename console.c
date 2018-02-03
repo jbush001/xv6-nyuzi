@@ -108,7 +108,6 @@ panic(char *s)
 {
   cli();
   cons.locking = 0;
-  // use lapiccpunum so that we can call panic from mycpu()
   cprintf("panic: ");
   cprintf(s);
   cprintf("\n");
@@ -121,7 +120,6 @@ panic(char *s)
 
 //PAGEBREAK: 50
 #define BACKSPACE 0x100
-#define CRTPORT 0x3d4
 
 void
 consputc(int c)

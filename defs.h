@@ -59,7 +59,6 @@ void            block_dev_io(struct buf*);
 
 // ioapic.c
 void            ioapicenable(int irq, int cpu);
-extern uchar    ioapicid;
 void            ioapicinit(void);
 
 // kalloc.c
@@ -71,13 +70,6 @@ void            kinit2(void*, void*);
 // kbd.c
 void            kbdintr(void);
 
-// lapic.c
-void            cmostime(struct rtcdate *r);
-extern volatile uint*    lapic;
-void            lapiceoi(void);
-void            lapicstartap(uchar, uint);
-void            microdelay(int);
-
 // log.c
 void            initlog(int dev);
 void            log_write(struct buf*);
@@ -85,12 +77,7 @@ void            begin_op();
 void            end_op();
 
 // mp.c
-extern int      ismp;
 void            mpinit(void);
-
-// picirq.c
-void            picenable(int);
-void            picinit(void);
 
 // pipe.c
 int             pipealloc(struct file**, struct file**);
@@ -123,7 +110,6 @@ void            swtch(struct context**, struct context*);
 
 // spinlock.c
 void            acquire(struct spinlock*);
-void            getcallerpcs(void*, uint*);
 int             holding(struct spinlock*);
 void            initlock(struct spinlock*, char*);
 void            release(struct spinlock*);
@@ -166,7 +152,6 @@ void            uartintr(void);
 void            uartputc(int);
 
 // vm.c
-void            seginit(void);
 void            kvmalloc(void);
 pde_t*          setupkvm();
 char*           uva2ka(pde_t*, char*);

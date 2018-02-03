@@ -8,11 +8,9 @@ OBJS = \
 	ioapic.o\
 	kalloc.o\
 	kbd.o\
-	lapic.o\
 	log.o\
 	main.o\
 	mp.o\
-	picirq.o\
 	pipe.o\
 	proc.o\
 	sleeplock.o\
