@@ -5,6 +5,7 @@
 #include "mmu.h"
 #include "proc.h"
 #include "nyuzi.h"
+#include "traps.h"
 
 static void startothers(void);
 void mpmain(void)  __attribute__((noreturn));
@@ -41,6 +42,12 @@ void
 mpmain(void)
 {
   mycpu()->started = 1; // tell startothers() we're up
+
+  // Each CPU needs its own ASID so it won't clobber others
+  __builtin_nyuzi_write_control_reg(CR_CURRENT_ASID, cpuid());
+
+  // Need to enable this on all hardware threads
+  ioapicenable(IRQ_TIMER, 0);
   scheduler();     // start running processes
 }
 

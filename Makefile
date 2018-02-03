@@ -33,7 +33,6 @@ AS = $(TOOLROOT)//clang
 LD = $(TOOLROOT)//ld.lld
 OBJDUMP = $(TOOLROOT)/llvm-objdump
 CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -O3 -Wall -g
-CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 
 all: kernel.hex fs.img
 
@@ -105,7 +104,7 @@ UPROGS=\
 	_wc\
 	_zombie
 
-fs.img: mkfs $(UPROGS)
+fs.img: mkfs $(UPROGS) FORCE
 	./mkfs fs.img $(UPROGS) README.xv6
 
 -include *.d
@@ -116,3 +115,5 @@ clean:
 	initcode initcode.out kernel xv6.img fs.img kernelmemfs mkfs \
 	.gdbinit \
 	$(UPROGS)
+
+FORCE:

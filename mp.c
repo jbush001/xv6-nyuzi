@@ -18,9 +18,5 @@ int ncpu;
 void
 mpinit(void)
 {
-#if 0
   ncpu = 4;
-#else
-  ncpu = 1; // For debugging
-#endif
 }

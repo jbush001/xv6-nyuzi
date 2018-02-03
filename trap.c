@@ -33,7 +33,6 @@ tvinit(void)
   initlock(&tickslock, "time");
 
   REGISTERS[REG_TIMER_INTERVAL] = TIMER_INTERVAL;
-  ioapicenable(IRQ_TIMER, 0);
 }
 
 static void dispatch_interrupt(int intnum)
@@ -49,7 +48,9 @@ static void dispatch_interrupt(int intnum)
       wakeup(&ticks);
       release(&tickslock);
       ack_interrupt(IRQ_TIMER);
-      REGISTERS[REG_TIMER_INTERVAL] = TIMER_INTERVAL;
+      if (cpuid() == 0)
+        REGISTERS[REG_TIMER_INTERVAL] = TIMER_INTERVAL;
+
       break;
   }
 }
