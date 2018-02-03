@@ -56,14 +56,15 @@ run: fs.img kernel.hex
 # exploring disk buffering implementations, but it is
 # great for testing the kernel on real hardware without
 # needing a scratch disk.
-MEMFSOBJS = $(filter-out ide.o,$(OBJS)) ramdisk.o
-kernelmemfs: $(MEMFSOBJS) entry.o entryother initcode fs.img
-	$(LD) $(LDFLAGS) -o kernelmemfs entry.o  $(MEMFSOBJS) -b binary initcode entryother fs.img
-	$(OBJDUMP) -S kernelmemfs > kernelmemfs.lst
-	$(OBJDUMP) -t kernelmemfs | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > kernelmemfs.sym
+MEMFSOBJS = $(filter-out sd_card.o,$(OBJS)) ramdisk.o
+kernelmemfs: $(MEMFSOBJS) entry.o initcode fs.img
+	$(LD) $(LDFLAGS) -T kernel.ld -o kernelmemfs.elf --image-base=0x80000000 entry.o $(MEMFSOBJS) -format binary initcode fs.img
+	$(OBJDUMP) -S kernelmemfs.elf > kernelmemfs.lst
+	$(TOOLROOT)/elf2hex -b 0x80000000 -o kernelmemfs.hex kernelmemfs.elf
 
-tags: $(OBJS) entryother.S _init
-	etags *.S *.c
+runmemfs: kernelmemfs.hex
+	nyuzi_emulator kernelmemfs.hex
+
 
 ULIB = ulib.o usys.o printf.o umalloc.o
 
