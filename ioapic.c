@@ -11,7 +11,7 @@ void
 ioapicinit(void)
 {
   __builtin_nyuzi_write_control_reg(CR_TRAP_HANDLER, (int) trap_entry);
-  __builtin_nyuzi_write_control_reg(CR_INTERRUPT_TRIGGER, 0x6);
+  __builtin_nyuzi_write_control_reg(CR_INTERRUPT_TRIGGER, 0x4);
 }
 
 void

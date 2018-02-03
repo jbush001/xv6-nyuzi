@@ -8,6 +8,8 @@
 #include "traps.h"
 #include "spinlock.h"
 
+#define TIMER_INTERVAL 500000   // 100 Hz
+
 struct spinlock tickslock;
 uint ticks;
 static const char *TRAP_NAMES[] =
@@ -29,6 +31,9 @@ void
 tvinit(void)
 {
   initlock(&tickslock, "time");
+
+  REGISTERS[REG_TIMER_INTERVAL] = TIMER_INTERVAL;
+  ioapicenable(IRQ_TIMER, 0);
 }
 
 static void dispatch_interrupt(int intnum)
@@ -44,6 +49,7 @@ static void dispatch_interrupt(int intnum)
       wakeup(&ticks);
       release(&tickslock);
       ack_interrupt(IRQ_TIMER);
+      REGISTERS[REG_TIMER_INTERVAL] = TIMER_INTERVAL;
       break;
   }
 }
