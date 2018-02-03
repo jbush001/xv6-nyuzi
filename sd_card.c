@@ -158,6 +158,9 @@ block_dev_io(struct buf *b)
     result = spi_transfer(0xff);
     if ((result & 0x1f) != 0x05)
         panic("write_sdmmc_device: write failed");
+
+    b->flags |= B_VALID;
+    b->flags &= ~B_DIRTY;
   } else {
     // read block
     int result;
@@ -181,6 +184,7 @@ block_dev_io(struct buf *b)
     // checksum (ignored)
     spi_transfer(0xff);
     spi_transfer(0xff);
+    b->flags |= B_VALID;
   }
 
   release(&idelock);
