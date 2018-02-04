@@ -85,9 +85,9 @@ static struct kmap {
   uint phys_end;
   int perm;
 } kmap[] = {
- { (void*)KERNBASE, V2P(KERNBASE), V2P(data), PTE_X | PTE_S},     // kern text+rodata
- { (void*)data,     V2P(data),     PHYSTOP,   PTE_W | PTE_S}, // kern data+memory
- { (void*)DEVSPACE, DEVSPACE,      0,         PTE_W | PTE_S}, // more devices
+ { (void*)KERNBASE, V2P(KERNBASE), V2P(data), PTE_X | PTE_S | PTE_G}, // kern text+rodata
+ { (void*)data,     V2P(data),     PHYSTOP,   PTE_W | PTE_S | PTE_G}, // kern data+memory
+ { (void*)DEVSPACE, DEVSPACE,      0,         PTE_W | PTE_S | PTE_G}, // more devices
 };
 
 
