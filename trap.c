@@ -103,7 +103,6 @@ static void dump_trap_frame(const struct trapframe *frame)
 }
 
 
-//PAGEBREAK: 41
 void
 trap(struct trapframe *tf)
 {
