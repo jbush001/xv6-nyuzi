@@ -17,7 +17,7 @@
 void
 uartinit(void)
 {
-  ioapicenable(IRQ_UART, 0);
+  irq_enable(IRQ_UART);
 }
 
 void

@@ -21,7 +21,6 @@ main(void)
   kinit1(end, P2V(4*1024*1024)); // phys page allocator
   kvmalloc();      // kernel page table
   mpinit();        // detect other processors
-  ioapicinit();    // another interrupt controller
   consoleinit();   // console hardware
   uartinit();      // serial port
 
@@ -29,7 +28,7 @@ main(void)
   tvinit();        // trap vectors
   binit();         // buffer cache
   fileinit();      // file table
-  block_dev_init();       // disk
+  bdev_init();       // disk
   startothers();   // start other processors
   kinit2(P2V(4*1024*1024), P2V(PHYSTOP)); // must come after startothers()
   userinit();      // first user process
@@ -46,7 +45,7 @@ mpmain(void)
   __builtin_nyuzi_write_control_reg(CR_CURRENT_ASID, cpuid());
 
   // Need to enable this on all hardware threads
-  ioapicenable(IRQ_TIMER, 0);
+  irq_enable(IRQ_TIMER);
   scheduler();     // start running processes
 }
 

@@ -70,7 +70,7 @@ static int send_sd_command(sd_command_t command, unsigned int parameter)
 }
 
 void
-block_dev_init(void)
+bdev_init(void)
 {
   int result;
 
@@ -129,13 +129,13 @@ block_dev_init(void)
 // If B_DIRTY is set, write buf to disk, clear B_DIRTY, set B_VALID.
 // Else if B_VALID is not set, read buf from disk, set B_VALID.
 void
-block_dev_io(struct buf *b)
+bdev_io(struct buf *b)
 {
   if(!holdingsleep(&b->lock))
-    panic("block_dev_io: buf not locked");
+    panic("bdev_io: buf not locked");
 
   if((b->flags & (B_VALID|B_DIRTY)) == B_VALID)
-    panic("block_dev_io: nothing to do");
+    panic("bdev_io: nothing to do");
 
   acquire(&idelock);  //DOC:acquire-lock
 

@@ -10,8 +10,11 @@
 
 #define TIMER_INTERVAL 500000   // 100 Hz
 
+extern void trap_entry();
+
 struct spinlock tickslock;
 uint ticks;
+static unsigned int intmask;
 static const char *TRAP_NAMES[] =
 {
     "reset",
@@ -30,8 +33,10 @@ static const char *TRAP_NAMES[] =
 void
 tvinit(void)
 {
-  initlock(&tickslock, "time");
+  __builtin_nyuzi_write_control_reg(CR_TRAP_HANDLER, (int) trap_entry);
+  __builtin_nyuzi_write_control_reg(CR_INTERRUPT_TRIGGER, 0x4);
 
+  initlock(&tickslock, "time");
   REGISTERS[REG_TIMER_INTERVAL] = TIMER_INTERVAL;
 }
 
@@ -47,7 +52,7 @@ static void dispatch_interrupt(int intnum)
       ticks++;
       wakeup(&ticks);
       release(&tickslock);
-      ack_interrupt(IRQ_TIMER);
+      ack_irq(IRQ_TIMER);
       if (cpuid() == 0)
         REGISTERS[REG_TIMER_INTERVAL] = TIMER_INTERVAL;
 
@@ -157,3 +162,16 @@ trap(struct trapframe *tf)
   if(myproc() && myproc()->killed && (tf->flags & FLAG_SUPERVISOR_EN) == 0)
     exit();
 }
+
+void
+irq_enable(int irq)
+{
+  intmask |= 1 << irq;
+  __builtin_nyuzi_write_control_reg(CR_INTERRUPT_MASK, intmask);
+}
+
+void ack_irq(int irq)
+{
+  __builtin_nyuzi_write_control_reg(CR_INTERRUPT_ACK, 1 << irq);
+}
+

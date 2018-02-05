@@ -5,7 +5,6 @@ OBJS = \
 	file.o\
 	fs.o\
 	sd_card.o\
-	ioapic.o\
 	kalloc.o\
 	kbd.o\
 	log.o\

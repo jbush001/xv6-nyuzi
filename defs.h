@@ -54,12 +54,8 @@ void            stati(struct inode*, struct stat*);
 int             writei(struct inode*, char*, uint, uint);
 
 // sd_card.c, ramdisk.c
-void            block_dev_init(void);
-void            block_dev_io(struct buf*);
-
-// ioapic.c
-void            ioapicenable(int irq, int cpu);
-void            ioapicinit(void);
+void            bdev_init(void);
+void            bdev_io(struct buf*);
 
 // kalloc.c
 char*           kalloc(void);
@@ -139,11 +135,11 @@ int             fetchstr(uint, char**);
 void            syscall(void);
 
 // trap.c
-void            idtinit(void);
 extern uint     ticks;
-void            tvinit(void);
 extern struct spinlock tickslock;
-void ack_interrupt(int irq);
+void            tvinit(void);
+void            ack_irq(int irq);
+void            irq_enable(int irq);
 
 // uart.c
 void            uartinit(void);

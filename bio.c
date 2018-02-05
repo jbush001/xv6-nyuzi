@@ -99,7 +99,7 @@ bread(uint dev, uint blockno)
 
   b = bget(dev, blockno);
   if((b->flags & B_VALID) == 0) {
-    block_dev_io(b);
+    bdev_io(b);
   }
   return b;
 }
@@ -111,7 +111,7 @@ bwrite(struct buf *b)
   if(!holdingsleep(&b->lock))
     panic("bwrite");
   b->flags |= B_DIRTY;
-  block_dev_io(b);
+  bdev_io(b);
 }
 
 // Release a locked buffer.
