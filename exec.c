@@ -102,7 +102,10 @@ exec(char *path, char **argv)
   curproc->tf->gpr[REG_SP] = sp;
   switchuvm(curproc);
   freevm(oldpgdir);
-  __asm__("tlbinvalall");
+
+  // Because we've reassigned this ASID to a new page directory, need
+  // to wipe out all entries.
+  inval_all_tlb();
 
   // This looks a bit strange. When exec is successful, it doesn't return
   // to the parent, but calls into main in the child. Normally a syscall

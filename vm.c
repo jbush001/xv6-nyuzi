@@ -5,11 +5,57 @@
 #include "memlayout.h"
 #include "mmu.h"
 #include "proc.h"
+#include "spinlock.h"
 #include "elf.h"
 
 extern char data[];  // defined by kernel.ld
 pde_t *kpgdir;  // for use in scheduler()
+int kasid;
 unsigned int trap_kernel_stack[NCPU];
+unsigned int asid_bitmap[MAX_ASID / 32];
+struct spinlock asid_lock;
+
+// Need to perform a tlbinvalall after this to clear out stale
+// mappings.
+int allocasid(void)
+{
+    int new_asid = -1;
+    int bitindex;
+    int wordindex;
+
+    acquire(&asid_lock);
+    for (wordindex = 0; wordindex < MAX_ASID / 32; wordindex++)
+    {
+        if (asid_bitmap[wordindex] != 0xffffffff)
+        {
+            // Search this word for the first zero bit. Inverting the bitmap
+            // allows us to scan for this, since there is no
+            // count-trailing-ones.
+            bitindex = __builtin_ctz(~asid_bitmap[wordindex]);
+            asid_bitmap[wordindex] |= 1 << bitindex;
+            new_asid = wordindex * 32 + bitindex;
+            break;
+        }
+    }
+
+    release(&asid_lock);
+    if (new_asid == -1)
+        panic("out of ASIDs");
+
+    return new_asid;
+}
+
+void freeasid(int asid)
+{
+    acquire(&asid_lock);
+    asid_bitmap[asid / 32] &= ~(1 << (asid % 32));
+    release(&asid_lock);
+}
+
+void inval_all_tlb(void)
+{
+    __asm__("tlbinvalall");
+}
 
 // Return the address of the PTE in page table pgdir
 // that corresponds to virtual address va.  If alloc!=0,
@@ -28,10 +74,7 @@ walkpgdir(pde_t *pgdir, const void *va, int alloc)
       return 0;
     // Make sure all those PTE_P bits are zero.
     memset(pgtab, 0, PGSIZE);
-    // The permissions here are overly generous, but they can
-    // be further restricted by the permissions in the page table
-    // entries, if necessary.
-    *pde = V2P(pgtab) | PTE_P | PTE_W;
+    *pde = V2P(pgtab) | PTE_P;
   }
   return &pgtab[PTX(va)];
 }
@@ -50,6 +93,7 @@ mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
   for(;;){
     if((pte = walkpgdir(pgdir, a, 1)) == 0)
       return -1;
+
     if(*pte & PTE_P)
       panic("remap");
     *pte = pa | perm | PTE_P;
@@ -61,9 +105,9 @@ mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
   return 0;
 }
 
-// There is one page table per process, plus one that's used when
+// There is one page directory per process, plus one that's used when
 // a CPU is not running any process (kpgdir). The kernel uses the
-// current process's page table during system calls and interrupts;
+// current process's page directory during system calls and interrupts;
 // page protection bits prevent user code from using the kernel's
 // mappings.
 //
@@ -85,9 +129,9 @@ static struct kmap {
   uint phys_end;
   int perm;
 } kmap[] = {
- { (void*)KERNBASE, V2P(KERNBASE), V2P(data), PTE_X | PTE_S | PTE_G}, // kern text+rodata
- { (void*)data,     V2P(data),     PHYSTOP,   PTE_W | PTE_S | PTE_G}, // kern data+memory
- { (void*)DEVSPACE, DEVSPACE,      0,         PTE_W | PTE_S | PTE_G}, // more devices
+ { (void*)KERNBASE, V2P(KERNBASE), V2P(data), PTE_X|PTE_S|PTE_G|PTE_P}, // kern text+rodata
+ { (void*)data,     V2P(data),     PHYSTOP,   PTE_W|PTE_S|PTE_G|PTE_P}, // kern data+memory
+ { (void*)DEVSPACE, DEVSPACE,      0,         PTE_W|PTE_S|PTE_G|PTE_P}, // more devices
 };
 
 
@@ -100,25 +144,30 @@ setupkvm(void)
 
   if((pgdir = (pde_t*)kalloc()) == 0)
     return 0;
+
   memset(pgdir, 0, PGSIZE);
   if (P2V(PHYSTOP) > (void*)DEVSPACE)
     panic("PHYSTOP too high");
-  for(k = kmap; k < &kmap[NELEM(kmap)]; k++)
+  for(k = kmap; k < &kmap[NELEM(kmap)]; k++) {
     if(mappages(pgdir, k->virt, k->phys_end - k->phys_start,
                 (uint)k->phys_start, k->perm) < 0) {
       freevm(pgdir);
       return 0;
     }
+  }
 
   return pgdir;
 }
 
 // Allocate one page table for the machine for the kernel address
-// space for scheduler processes.
+// space for scheduler processes. This gets called once at boot time.
 void
 kvmalloc(void)
 {
+  initlock(&asid_lock, "asid");
   kpgdir = setupkvm();
+  kasid = allocasid();
+  inval_all_tlb();
   switchkvm();
 }
 
@@ -129,7 +178,7 @@ switchkvm(void)
 {
   // switch to the kernel page table
   __builtin_nyuzi_write_control_reg(CR_PAGE_DIR_BASE, V2P(kpgdir));
-  __asm__("tlbinvalall");
+  __builtin_nyuzi_write_control_reg(CR_CURRENT_ASID, kasid);
 }
 
 // Switch h/w page table to correspond to process p.
@@ -146,8 +195,7 @@ switchuvm(struct proc *p)
   pushcli();
   trap_kernel_stack[cpuid()] = (uint)p->kstack + KSTACKSIZE;
   __builtin_nyuzi_write_control_reg(CR_PAGE_DIR_BASE, V2P(p->pgdir));
-  __asm__("tlbinvalall");
-
+  __builtin_nyuzi_write_control_reg(CR_CURRENT_ASID, p->asid);
   popcli();
 }
 
@@ -247,6 +295,7 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       char *v = P2V(pa);
       kfree(v);
       *pte = 0;
+      __asm__("tlbinval %0" : : "s" (a));
     }
   }
   return newsz;

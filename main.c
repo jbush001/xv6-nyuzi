@@ -41,10 +41,7 @@ mpmain(void)
 {
   mycpu()->started = 1; // tell startothers() we're up
 
-  // Each CPU needs its own ASID so it won't clobber others
-  __builtin_nyuzi_write_control_reg(CR_CURRENT_ASID, cpuid());
-
-  // Need to enable this on all hardware threads
+  // Need to enable this on each hardware thread
   irq_enable(IRQ_TIMER);
   scheduler();     // start running processes
 }

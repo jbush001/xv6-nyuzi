@@ -26,16 +26,15 @@ pinit(void)
   initlock(&ptable.lock, "ptable");
 }
 
-// Must be called with interrupts disabled
 int
 cpuid() {
-  return mycpu()-cpus;
+  return __builtin_nyuzi_read_control_reg(CR_CURRENT_HW_THREAD);
 }
 
 struct cpu*
 mycpu(void)
 {
-  return &cpus[__builtin_nyuzi_read_control_reg(CR_CURRENT_HW_THREAD)];
+  return &cpus[cpuid()];
 }
 
 // Disable interrupts so that we are not rescheduled
@@ -108,6 +107,7 @@ userinit(void)
   if((p->pgdir = setupkvm()) == 0)
     panic("userinit: out of memory?");
   inituvm(p->pgdir, _binary_initcode_start, (int)_binary_initcode_size);
+  inval_all_tlb();
   p->sz = PGSIZE;
   memset(p->tf, 0, sizeof(*p->tf));
   p->tf->flags = FLAG_INTERRUPT_EN | FLAG_MMU_EN;
@@ -170,9 +170,11 @@ fork(void)
     np->state = UNUSED;
     return -1;
   }
+  np->asid = allocasid();
   np->sz = curproc->sz;
   np->parent = curproc;
   *np->tf = *curproc->tf;
+  inval_all_tlb();
 
   // Clear s0 so that fork returns 0 in the child.
   np->tf->gpr[0] = 0;
@@ -264,6 +266,7 @@ wait(void)
         kfree(p->kstack);
         p->kstack = 0;
         freevm(p->pgdir);
+        freeasid(p->asid);
         p->pid = 0;
         p->parent = 0;
         p->name[0] = 0;
