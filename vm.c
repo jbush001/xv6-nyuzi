@@ -10,10 +10,10 @@
 
 extern char data[];  // defined by kernel.ld
 pde_t *kpgdir;  // for use in scheduler()
-int kasid;
-unsigned int trap_kernel_stack[NCPU];
-unsigned int asid_bitmap[MAX_ASID / 32];
-struct spinlock asid_lock;
+static int kasid;
+static unsigned int asid_bitmap[MAX_ASID / 32];
+static struct spinlock asid_lock;
+unsigned int trap_kernel_stack[NCPU]; // Read by trap handler
 
 // Need to perform a tlbinvalall after this to clear out stale
 // mappings.
@@ -113,9 +113,12 @@ mappages(pde_t *pgdir, void *va, uint size, uint pa, int perm)
 //
 // setupkvm() and exec() set up every page table like this:
 //
-//   data..KERNBASE+PHYSTOP: mapped to V2P(data)..PHYSTOP,
-//                                  rw data + free physical memory
-//   0xfe000000..0: mapped direct (devices such as ioapic)
+//   0..KERNBASE: user memory (text+data+stack+heap), mapped to
+//                phys memory allocated by the kernel
+//   KERNBASE..data: kernel's instructions and r/o data
+//   data..PHYSTOP: mapped to V2P(data)..PHYSTOP,
+//                 rw data + free physical memory
+//   0xffff0000..0: mapped direct (device registers)
 //
 // The kernel allocates physical memory for its heap and for user memory
 // between V2P(end) and the end of physical memory (PHYSTOP)
@@ -131,7 +134,7 @@ static struct kmap {
 } kmap[] = {
  { (void*)KERNBASE, V2P(KERNBASE), V2P(data), PTE_X|PTE_S|PTE_G|PTE_P}, // kern text+rodata
  { (void*)data,     V2P(data),     PHYSTOP,   PTE_W|PTE_S|PTE_G|PTE_P}, // kern data+memory
- { (void*)DEVSPACE, DEVSPACE,      0,         PTE_W|PTE_S|PTE_G|PTE_P}, // more devices
+ { (void*)DEVSPACE, DEVSPACE,      0,         PTE_W|PTE_S|PTE_G|PTE_P}, // device registers
 };
 
 
@@ -181,7 +184,7 @@ switchkvm(void)
   __builtin_nyuzi_write_control_reg(CR_CURRENT_ASID, kasid);
 }
 
-// Switch h/w page table to correspond to process p.
+// Switch h/w page directory to correspond to process p.
 void
 switchuvm(struct proc *p)
 {
