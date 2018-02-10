@@ -5,12 +5,10 @@ _*
 *.lst
 *.sym
 *.img
-vectors.S
-bootblock
+*.elf
+*.hex
 entryother
 initcode
-initcode.out
 kernel
 kernelmemfs
 mkfs
-.gdbinit
