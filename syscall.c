@@ -142,7 +142,7 @@ syscall(void)
   unsigned int num;
   struct proc *curproc = myproc();
 
-  num = curproc->tf->gpr[8];
+  num = __builtin_nyuzi_read_control_reg(CR_SYSCALL_INDEX);
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     curproc->tf->gpr[0] = syscalls[num]();
   } else {

@@ -10,13 +10,11 @@ _start:
   # exec(init, argv)
   lea s0, init
   lea s1, argv
-  move s8, SYS_exec
-  syscall
+  syscall SYS_exec
 
 # for(;;) exit();
 exit:
-  move s0, SYS_exit
-  syscall
+  syscall SYS_exit
   b exit
 
 # char init[] = "/init\0";

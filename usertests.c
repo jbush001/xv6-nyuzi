@@ -1550,10 +1550,9 @@ void
 validateint(int *p)
 {
   asm("move s25, sp\n"
-      "move sp, %1\n"
-      "move s0, %0\n"
-      "syscall\n"
-      "move sp, s25\n" : : "s" (SYS_sleep), "s" (p));
+      "move sp, %0\n"
+      "syscall 13\n" // SYS_sleep
+      "move sp, s25\n" : : "s" (p));
 }
 
 void

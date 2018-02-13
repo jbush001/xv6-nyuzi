@@ -4,8 +4,7 @@
 #define SYSCALL(name) \
   .globl name; \
   name: \
-    move s8, SYS_ ## name; \
-    syscall; \
+    syscall SYS_ ## name; \
     ret
 
 SYSCALL(fork)
