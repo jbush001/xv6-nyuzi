@@ -119,7 +119,7 @@ trap(struct trapframe *tf)
     if(myproc()->killed)
       exit();
     myproc()->tf = tf;
-    myproc()->tf->pc += 4;  // Do before syscall, which will modify if exec
+    tf->pc += 4;  // Do before syscall, which will modify if exec
     syscall();
     if(myproc()->killed)
       exit();
@@ -138,7 +138,7 @@ trap(struct trapframe *tf)
       panic("trap");
     }
     // In user space, assume process misbehaved.
-    cprintf("user space process crashed:\n");
+    cprintf("user space process %s crashed:\n", myproc()->name);
     dump_trap_frame(tf);
     myproc()->killed = 1;
   }
