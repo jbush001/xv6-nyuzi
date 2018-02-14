@@ -42,9 +42,13 @@ initcode: initcode.S
 	$(CC) $(CFLAGS) -nostdinc -I. -c initcode.S
 	$(LD) $(LDFLAGS) --oformat binary --image-base=0 -o initcode initcode.o
 
+# Run in emulator
 run: fs.img kernel.hex
 	nyuzi_emulator -b fs.img kernel.hex
 
+# Run in verilator
+vrun: fs.img kernel.hex
+	nyuzi_vsim +block=fs.img +bin=kernel.hex
 
 # kernelmemfs is a copy of kernel that maintains the
 # disk image in memory instead of writing to a disk.
