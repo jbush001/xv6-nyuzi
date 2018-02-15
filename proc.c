@@ -144,7 +144,6 @@ growproc(int n)
       return -1;
   }
   curproc->sz = sz;
-  switchuvm(curproc);
   return 0;
 }
 
