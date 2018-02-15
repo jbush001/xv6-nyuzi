@@ -52,11 +52,6 @@ void freeasid(int asid)
     release(&asid_lock);
 }
 
-void inval_all_tlb(void)
-{
-    __asm__("tlbinvalall");
-}
-
 // Return the address of the PTE in page table pgdir
 // that corresponds to virtual address va.  If alloc!=0,
 // create any required page table pages.
@@ -298,7 +293,7 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       char *v = P2V(pa);
       kfree(v);
       *pte = 0;
-      __asm__("tlbinval %0" : : "s" (a));
+      inval_tlb((void*) a);
     }
   }
   return newsz;

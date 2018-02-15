@@ -150,7 +150,6 @@ void            uartputc(int);
 void            kvmalloc(void);
 int             allocasid(void);
 void            freeasid(int);
-void            inval_all_tlb(void);
 pde_t*          setupkvm();
 char*           uva2ka(pde_t*, char*);
 int             allocuvm(pde_t*, uint, uint);

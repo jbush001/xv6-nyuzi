@@ -20,6 +20,18 @@ sti(void)
     readflags() | FLAG_INTERRUPT_EN);
 }
 
+static void
+inval_all_tlb(void)
+{
+    __asm__("tlbinvalall");
+}
+
+static void
+inval_tlb(void *addr)
+{
+    __asm__("tlbinval %0" : : "s" (addr));
+}
+
 // Layout of the trap frame built on the stack by the
 // hardware and by trapasm.S, and passed to trap().
 
