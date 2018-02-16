@@ -126,25 +126,13 @@ trapret:                load_32 s1, 4(sp)
 
 trap_kernel_stack_addr: .long trap_kernel_stack
 
+//
+// Called when starting a new process after fork. Loads a new user stack
+// pointer and restores user state.
+//
                         .globl jump_to_user_proc
 jump_to_user_proc:      move sp, s0
                         b trapret
-
-//
-// Jump to a user mode task.
-//
-//  void jump_to_user_mode(int argc, void *argv, unsigned int inital_pc,
-//      unsigned int user_stack_ptr);
-//
-// Use eret to simultaneously jump to PC and switch modes.
-//
-
-                        .globl jump_to_user_mode
-jump_to_user_mode:      setcr s2, CR_TRAP_PC        // Address to jump to.
-                        move s10, FLAG_MMU_EN | FLAG_INTERRUPT_EN
-                        setcr s10, CR_SAVED_FLAGS
-                        move sp, s3
-                        eret
 
 //
 // TLB miss handler. This is invoked with the MMU disabled.
