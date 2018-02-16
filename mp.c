@@ -4,7 +4,6 @@
 #include "defs.h"
 #include "param.h"
 #include "memlayout.h"
-#include "mp.h"
 #include "nyuzi.h"
 #include "mmu.h"
 #include "proc.h"
