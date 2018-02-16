@@ -70,6 +70,7 @@ mp_init_stack: .long  0
 
 .comm stack, KSTACKSIZE, 64
 
+# This page table maps the first 4 megabytes of physical memory.
 .align 0x1000
 entrypgtab:
   .long 0x0f, 0x100f, 0x200f, 0x300f, 0x400f, 0x500f, 0x600f
@@ -220,26 +221,9 @@ entrypgtab:
   .long 0x3f700f, 0x3f800f, 0x3f900f, 0x3fa00f, 0x3fb00f, 0x3fc00f, 0x3fd00f
   .long 0x3fe00f, 0x3ff00f
 
-.align 0x1000
-iopgtab:
-  .space 0x1000 - (16 * 4)
-  .long 0xffff0000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xffff1000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xffff2000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xffff3000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xffff4000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xffff5000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xffff6000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xffff7000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xffff8000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xffff9000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xffffa000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xffffb000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xffffc000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xffffd000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xffffe000 | PTE_P | PTE_W | PTE_S | PTE_G
-  .long 0xfffff000 | PTE_P | PTE_W | PTE_S | PTE_G
-
+# The initial page directory has the page table inserted at two addresses:
+# 0x0, where everything is before the MMU is enabled and 0x80000000, where
+# the kernel will be after the MMU is enabled.
 .align 0x1000
 entrypgdir:
   .long entrypgtab - 0x80000000 + PTE_P
@@ -311,9 +295,7 @@ entrypgdir:
   .long 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   .long 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   .long 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  .long 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-
-  .long iopgtab - 0x80000000 + PTE_P
+  .long 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 
 
 
