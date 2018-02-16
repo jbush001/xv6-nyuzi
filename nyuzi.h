@@ -20,13 +20,13 @@ sti(void)
     readflags() | FLAG_INTERRUPT_EN);
 }
 
-static void
+static inline void
 inval_all_tlb(void)
 {
     __asm__("tlbinvalall");
 }
 
-static void
+static inline void
 inval_tlb(void *addr)
 {
     __asm__("tlbinval %0" : : "s" (addr));
