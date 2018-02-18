@@ -50,6 +50,9 @@ run: fs.img kernel.hex
 vrun: fs.img kernel.hex
 	nyuzi_vsim +block=fs.img +bin=kernel.hex
 
+vrunmemfs: kernelmemfs.hex
+	nyuzi_vsim +bin=kernelmemfs.hex
+
 # kernelmemfs is a copy of kernel that maintains the
 # disk image in memory instead of writing to a disk.
 # This is not so useful for testing persistent storage or
@@ -65,6 +68,8 @@ kernelmemfs: $(MEMFSOBJS) entry.o initcode fs.img
 runmemfs: kernelmemfs.hex
 	nyuzi_emulator kernelmemfs.hex
 
+fpgarun: kernelmemfs.hex
+	serial_boot $(SERIAL_PORT) kernelmemfs.hex
 
 ULIB = ulib.o usys.o printf.o umalloc.o
 
