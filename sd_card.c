@@ -1,5 +1,3 @@
-// This is actually an SD card driver
-
 #include "types.h"
 #include "defs.h"
 #include "param.h"

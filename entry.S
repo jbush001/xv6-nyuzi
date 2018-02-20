@@ -40,6 +40,9 @@ entry:
     # Branch to flush pipeline and ensure paging is on
     b 1f
 1:
+    # Load global pointer
+    movehi gp, hi(_GLOBAL_OFFSET_TABLE_)
+    or gp, gp, lo(_GLOBAL_OFFSET_TABLE_)
 
     # All processors start here, determine if I'm the main processor
     getcr s0, 0

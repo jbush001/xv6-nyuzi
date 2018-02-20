@@ -71,7 +71,7 @@ runmemfs: kernelmemfs.hex
 fpgarun: kernelmemfs.hex
 	serial_boot $(SERIAL_PORT) kernelmemfs.hex
 
-ULIB = ulib.o usys.o printf.o umalloc.o
+ULIB = ulib.o usys.o printf.o umalloc.o crt0.o
 
 _%: %.o $(ULIB)
 	$(LD) $(LDFLAGS) -e main -o $@ $^
@@ -81,7 +81,7 @@ _%: %.o $(ULIB)
 _forktest: forktest.o $(ULIB)
 	# forktest has less library code linked in - needs to be small
 	# in order to be able to max out the proc table.
-	$(LD) $(LDFLAGS) -N -e main -Ttext 0 -o _forktest forktest.o ulib.o usys.o
+	$(LD) $(LDFLAGS) -N -Ttext 0 -o _forktest forktest.o ulib.o usys.o crt0.o
 	$(OBJDUMP) -S _forktest > forktest.lst
 
 mkfs: mkfs.c fs.h

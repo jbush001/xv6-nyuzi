@@ -81,6 +81,10 @@ save_frame:             getcr s0, CR_SCRATCHPAD0        // restore s0
 
                         move s0, sp  // pointer to trap frame is argument to handle_trap
 
+                        # Load global pointer
+                        movehi gp, hi(_GLOBAL_OFFSET_TABLE_)
+                        or gp, gp, lo(_GLOBAL_OFFSET_TABLE_)
+
                         call trap
 
 trapret:                load_32 s1, 4(sp)
