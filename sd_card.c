@@ -18,11 +18,11 @@ static struct spinlock idelock;
 
 typedef enum
 {
-  SD_CMD_RESET = 0,
-  SD_CMD_INIT = 1,
-  SD_CMD_SET_BLOCK_LEN = 0x16,
-  SD_CMD_READ_SINGLE_BLOCK = 0x17,
-  SD_CMD_WRITE_SINGLE_BLOCK = 0x24
+  CMD_GO_IDLE_STATE = 0,
+  CMD_SEND_OP_COND = 1,
+  CMD_SET_BLOCKLEN = 16,
+  CMD_READ_SINGLE_BLOCK = 17,
+  CMD_WRITE_SINGLE_BLOCK = 24
 } sd_command_t;
 
 static void set_cs(int level)
@@ -83,7 +83,7 @@ bdev_init(void)
 
   // Reset the card by sending CMD0 with CS low.
   set_cs(0);
-  result = send_sd_command(SD_CMD_RESET, 0);
+  result = send_sd_command(CMD_GO_IDLE_STATE, 0);
 
   // The card should have returned 01 to indicate it is in SPI mode.
   if (result != 1)
@@ -91,7 +91,7 @@ bdev_init(void)
     if (result == 0xff)
       cprintf("init_sdmmc_device: timed out during reset\n");
     else
-      cprintf("init_sdmmc_device: SD_CMD_RESET failed: invalid response %02x\n", result);
+      cprintf("init_sdmmc_device: CMD_GO_IDLE_STATE failed: invalid response %02x\n", result);
 
     return;
   }
@@ -100,22 +100,22 @@ bdev_init(void)
   // of milliseconds.
   while (1)
   {
-    result = send_sd_command(SD_CMD_INIT, 0);
+    result = send_sd_command(CMD_SEND_OP_COND, 0);
     if (result == 0)
       break;
 
     if (result != 1)
     {
-      cprintf("init_sdmmc_device: SD_CMD_INIT unexpected response %02x\n", result);
+      cprintf("init_sdmmc_device: CMD_SEND_OP_COND unexpected response %02x\n", result);
       return;
     }
   }
 
   // Configure the block size
-  result = send_sd_command(SD_CMD_SET_BLOCK_LEN, BSIZE);
+  result = send_sd_command(CMD_SET_BLOCKLEN, BSIZE);
   if (result != 0)
   {
-    cprintf("init_sdmmc_device: SD_CMD_SET_BLOCK_LEN unexpected response %02x\n", result);
+    cprintf("init_sdmmc_device: CMD_SET_BLOCKLEN unexpected response %02x\n", result);
     return;
   }
 
@@ -141,9 +141,9 @@ bdev_io(struct buf *b)
     // write block
     int result;
 
-    result = send_sd_command(SD_CMD_WRITE_SINGLE_BLOCK, b->blockno);
+    result = send_sd_command(CMD_WRITE_SINGLE_BLOCK, b->blockno);
     if (result != 0)
-        panic("write_sdmmc_device: SD_CMD_WRITE_SINGLE_BLOCK unexpected response");
+        panic("write_sdmmc_device: CMD_WRITE_SINGLE_BLOCK unexpected response");
 
     spi_transfer(DATA_TOKEN);
     for (int i = 0; i < BSIZE; i++)
@@ -164,9 +164,9 @@ bdev_io(struct buf *b)
     int result;
     int data_timeout;
 
-    result = send_sd_command(SD_CMD_READ_SINGLE_BLOCK, b->blockno);
+    result = send_sd_command(CMD_READ_SINGLE_BLOCK, b->blockno);
     if (result != 0)
-        panic("read_sdmmc_device: SD_CMD_READ_SINGLE_BLOCK unexpected response");
+        panic("read_sdmmc_device: CMD_READ_SINGLE_BLOCK unexpected response");
 
     // Wait for start of data packet
     data_timeout = 10000;
