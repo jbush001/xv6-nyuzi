@@ -60,7 +60,7 @@ vrunmemfs: kernelmemfs.hex
 # great for testing the kernel on real hardware without
 # needing a scratch disk.
 MEMFSOBJS = $(filter-out sd_card.o,$(OBJS)) ramdisk.o
-kernelmemfs: $(MEMFSOBJS) entry.o initcode fs.img
+kernelmemfs.hex: $(MEMFSOBJS) entry.o initcode fs.img
 	$(LD) $(LDFLAGS) -T kernel.ld -o kernelmemfs.elf --image-base=0x80000000 entry.o $(MEMFSOBJS) -format binary initcode fs.img
 	$(OBJDUMP) -S kernelmemfs.elf > kernelmemfs.lst
 	$(TOOLROOT)/elf2hex -b 0x80000000 -o kernelmemfs.hex kernelmemfs.elf
