@@ -41,6 +41,8 @@
 #define PTE_ADDR(pte)   ((uint)(pte) & ~0xFFF)
 #define PTE_FLAGS(pte)  ((uint)(pte) &  0xFFF)
 
+#define CACHE_LINE_SIZE 64
+
 #define MAX_ASID 64
 
 #ifndef __ASSEMBLER__

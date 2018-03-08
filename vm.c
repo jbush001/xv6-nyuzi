@@ -203,13 +203,16 @@ void
 inituvm(pde_t *pgdir, char *init, uint sz)
 {
   char *mem;
+  uint i;
 
   if(sz >= PGSIZE)
     panic("inituvm: more than a page");
   mem = kalloc();
   memset(mem, 0, PGSIZE);
-  mappages(pgdir, 0, PGSIZE, V2P(mem), PTE_W | PTE_X);
   memmove(mem, init, sz);
+  mappages(pgdir, 0, PGSIZE, V2P(mem), PTE_W | PTE_X);
+  for (i = 0; i < PGSIZE; i += CACHE_LINE_SIZE)
+      __asm__("iinvalidate %0" : : "s" (i));
 }
 
 // Load a program segment into pgdir.  addr must be page-aligned
@@ -243,6 +246,7 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
 {
   char *mem;
   uint a;
+  uint i;
 
   if(newsz >= KERNBASE)
     return 0;
@@ -264,6 +268,9 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
       kfree(mem);
       return 0;
     }
+
+    for (i = 0; i < PGSIZE; i += CACHE_LINE_SIZE)
+      __asm__("iinvalidate %0" : : "s" (a + i));
   }
   return newsz;
 }
