@@ -17,6 +17,7 @@ exec(char *path, char **argv)
   struct inode *ip;
   struct proghdr ph;
   pde_t *pgdir, *oldpgdir;
+  uint pflags;
   struct proc *curproc = myproc();
 
   begin_op();
@@ -49,7 +50,12 @@ exec(char *path, char **argv)
       goto bad;
     if(ph.vaddr + ph.memsz < ph.vaddr)
       goto bad;
-    if((sz = allocuvm(pgdir, sz, ph.vaddr + ph.memsz)) == 0)
+    pflags = 0;
+    if(ph.flags & ELF_PROG_FLAG_EXEC)
+        pflags |= PTE_X;
+    if(ph.flags & ELF_PROG_FLAG_WRITE)
+        pflags |= PTE_W;
+    if((sz = allocuvm(pgdir, sz, ph.vaddr + ph.memsz, pflags)) == 0)
       goto bad;
     if(ph.vaddr % PGSIZE != 0)
       goto bad;
@@ -63,7 +69,7 @@ exec(char *path, char **argv)
   // Allocate two pages at the next page boundary.
   // Make the first inaccessible.  Use the second as the user stack.
   sz = PGROUNDUP(sz);
-  if((sz = allocuvm(pgdir, sz, sz + 2*PGSIZE)) == 0)
+  if((sz = allocuvm(pgdir, sz, sz + 2*PGSIZE, PTE_W)) == 0)
     goto bad;
 
   setptes(pgdir, (char*)(sz - 2*PGSIZE));

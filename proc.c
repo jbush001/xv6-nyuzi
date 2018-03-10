@@ -128,6 +128,7 @@ userinit(void)
 }
 
 // Grow current process's memory by n bytes.
+// This is called by sbrk to grow the user heap.
 // Return 0 on success, -1 on failure.
 int
 growproc(int n)
@@ -137,7 +138,7 @@ growproc(int n)
 
   sz = curproc->sz;
   if(n > 0){
-    if((sz = allocuvm(curproc->pgdir, sz, sz + n)) == 0)
+    if((sz = allocuvm(curproc->pgdir, sz, sz + n, PTE_W)) == 0)
       return -1;
   } else if(n < 0){
     if((sz = deallocuvm(curproc->pgdir, sz, sz + n)) == 0)
