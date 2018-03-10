@@ -6,9 +6,11 @@
 # a struct context, and save its address in *old.
 # Switch stacks to new and pop previously-saved registers.
 
+#include "asm.h"
+
                     .global swtch
                     .type swtch,@function
-swtch:              sub_i sp, sp, 0x840
+swtch:              sub_i sp, sp, CONTEXT_SIZE
 
                     // This must save and restore *all* vector registers,
                     // because they are not used in the kernel and are not
@@ -103,7 +105,7 @@ swtch:              sub_i sp, sp, 0x840
                     load_32 gp, 0x810(sp)
                     load_32 fp,  0x814(sp)
                     load_32 ra,  0x818(sp)
-                    add_i sp, sp, 0x840
+                    add_i sp, sp, CONTEXT_SIZE
 
                     ret
 

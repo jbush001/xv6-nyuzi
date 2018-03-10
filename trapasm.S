@@ -128,7 +128,7 @@ trapret:                load_32 s1, 4(sp)
                         load_32 sp, TRAPFRAME_SP_OFFSET(sp) // Restore old stack pointer
                         eret
 
-trap_kernel_stack_addr: .long trap_kernel_stack
+trap_kernel_stack_addr: .long trap_kernel_stack // vm.c
 
 //
 // Called when starting a new process after fork. Loads a new user stack

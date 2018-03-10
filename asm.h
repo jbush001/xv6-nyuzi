@@ -44,9 +44,10 @@
 #define REG_FP 29
 #define REG_GP 28
 
-// Must be rounded to a multiple of 64
+// Must be a multiple of 64. See trap_entry in trapasm.S.
 #define TRAPFRAME_SIZE 192
 
+// See swtch.S
 #define CONTEXT_SIZE 0x840
 
 
