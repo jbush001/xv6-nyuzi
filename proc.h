@@ -1,6 +1,5 @@
 // Per-CPU state
 struct cpu {
-  uchar apicid;                // Local APIC ID
   struct context *scheduler;   // swtch() here to enter scheduler
   volatile uint started;       // Has the CPU started?
   int ncli;                    // Depth of pushcli nesting.
@@ -14,7 +13,7 @@ extern int ncpu;
 // Saved registers for kernel context switches.
 
 struct context {
-  uint vector_regs[16 * 32];
+  uint vector_regs[32][16];
   uint s24;
   uint s25;
   uint s26;
