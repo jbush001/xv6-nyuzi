@@ -63,9 +63,6 @@ void            kfree(char*);
 void            kinit1(void*, void*);
 void            kinit2(void*, void*);
 
-// kbd.c
-void            kbdintr(void);
-
 // log.c
 void            initlog(int dev);
 void            log_write(struct buf*);
