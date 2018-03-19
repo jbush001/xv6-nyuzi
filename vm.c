@@ -15,7 +15,8 @@ static unsigned int asid_bitmap[MAX_ASID / 32];
 static struct spinlock asid_lock;
 unsigned int trap_kernel_stack[NCPU]; // Read by trap handler
 
-// Need to perform a tlbinvalall after this to clear out stale
+// Allocate an address space ID.
+// Need to perform a tlbinvalall before using the ID to clear out stale
 // mappings.
 int allocasid(void)
 {
@@ -24,10 +25,8 @@ int allocasid(void)
     int wordindex;
 
     acquire(&asid_lock);
-    for (wordindex = 0; wordindex < MAX_ASID / 32; wordindex++)
-    {
-        if (asid_bitmap[wordindex] != 0xffffffff)
-        {
+    for (wordindex = 0; wordindex < MAX_ASID / 32; wordindex++) {
+        if (asid_bitmap[wordindex] != 0xffffffff) {
             // Search this word for the first zero bit. Inverting the bitmap
             // allows us to scan for this, since there is no
             // count-trailing-ones.

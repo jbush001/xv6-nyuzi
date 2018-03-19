@@ -27,7 +27,8 @@ pinit(void)
 }
 
 int
-cpuid() {
+cpuid()
+{
   return __builtin_nyuzi_read_control_reg(CR_CURRENT_HW_THREAD);
 }
 
@@ -40,7 +41,8 @@ mycpu(void)
 // Disable interrupts so that we are not rescheduled
 // while reading proc from the cpu structure
 struct proc*
-myproc(void) {
+myproc(void)
+{
   struct cpu *c;
   struct proc *p;
   pushcli();

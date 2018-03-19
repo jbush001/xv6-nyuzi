@@ -27,20 +27,16 @@ acquire(struct spinlock *lk)
   pushcli(); // disable interrupts to avoid deadlock.
 
   if(holding(lk))
-  {
     panic("acquire");
-  }
 
-  do
-  {
+  do {
       // Wait while local copy is locked, to avoid creating traffic on
       // the L2 interconnect.
       while (lk->locked)
           ;
 
       // Attempt to grab lock
-  }
-  while (!__sync_bool_compare_and_swap(&lk->locked, 0, 1));
+  } while (!__sync_bool_compare_and_swap(&lk->locked, 0, 1));
 
   // Tell the C compiler and the processor to not move loads or stores
   // past this point, to ensure that the critical section's memory
