@@ -144,7 +144,6 @@ syscall(void)
   } else {
     cprintf("%d %s: unknown sys call %d\n",
             curproc->pid, curproc->name, num);
-    panic("");
     curproc->tf->gpr[0] = -1;
   }
 }
