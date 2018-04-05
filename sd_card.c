@@ -130,7 +130,7 @@ bdev_init(void)
   // After power on, need to send at least 74 clocks with DI and CS high
   // per the spec to initialize (10 bytes is 80 clocks).
   set_cs(1);
-  for (int i = 0; i < 10; i++)
+  for (i = 0; i < 10; i++)
     spi_transfer(0xff);
 
   // Reset the card by sending CMD0 with CS low.
@@ -215,6 +215,8 @@ bdev_init(void)
 void
 bdev_io(struct buf *b)
 {
+  int i;
+
   if(!holdingsleep(&b->lock))
     panic("bdev_io: buf not locked");
 
@@ -232,7 +234,7 @@ bdev_io(struct buf *b)
         panic("write_sdmmc_device: CMD_WRITE_SINGLE_BLOCK unexpected response");
 
     spi_transfer(DATA_TOKEN);
-    for (int i = 0; i < BSIZE; i++)
+    for (i = 0; i < BSIZE; i++)
         spi_transfer(b->data[i]);
 
     // checksum (ignored)
@@ -262,7 +264,7 @@ bdev_io(struct buf *b)
             panic("read_sdmmc_device: timed out waiting for data token");
     }
 
-    for (int i = 0; i < BSIZE; i++)
+    for (i = 0; i < BSIZE; i++)
        b->data[i] = spi_transfer(0xff);
 
     // checksum (ignored)
