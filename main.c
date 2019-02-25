@@ -68,7 +68,7 @@ startothers(void)
     mp_init_stack = (unsigned int) (stack + KSTACKSIZE);
 
     // write control register to start thread
-    REGISTERS[REG_THREAD_RESUME] = 1 << cpuid;
+    __builtin_nyuzi_write_control_reg(CR_THREAD_RESUME, 1 << cpuid);
 
     // wait for cpu to finish mpmain()
     while(c->started == 0)

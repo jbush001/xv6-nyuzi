@@ -112,7 +112,8 @@ panic(char *s)
   cprintf("\n");
 
   panicked = 1; // freeze other CPU
-  REGISTERS[REG_THREAD_HALT] = 0xffffffff;
+
+  __builtin_nyuzi_write_control_reg(CR_THREAD_SUSPEND, 0xffffffff);
   for(;;)
     ;
 }
@@ -250,4 +251,3 @@ consoleinit(void)
   devsw[CONSOLE].read = consoleread;
   cons.locking = 1;
 }
-

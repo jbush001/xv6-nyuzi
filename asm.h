@@ -19,6 +19,8 @@
 #define CR_INTERRUPT_TRIGGER 17
 #define CR_JTAG_DATA 18
 #define CR_SYSCALL_INDEX 19
+#define CR_THREAD_SUSPEND 20
+#define CR_THREAD_RESUME 21
 
 // Flag register bits
 #define FLAG_INTERRUPT_EN (1 << 0)
@@ -49,6 +51,3 @@
 
 // See swtch.S
 #define CONTEXT_SIZE 0x840
-
-
-

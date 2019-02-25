@@ -28,7 +28,7 @@ CC = $(TOOLROOT)/clang
 AS = $(TOOLROOT)//clang
 LD = $(TOOLROOT)//ld.lld
 OBJDUMP = $(TOOLROOT)/llvm-objdump
-CFLAGS = -fno-vectorize -fno-slp-vectorize -fno-pic -static -fno-builtin -fno-strict-aliasing -O3 -Wall -g
+CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -O3 -Wall -fno-vectorize -fno-slp-vectorize
 
 all: kernel.hex fs.img
 
