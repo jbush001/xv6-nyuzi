@@ -69,13 +69,5 @@ enum RegisterIndex
     REG_VGA_MICROCODE       = 0x0184 / 4,
     REG_VGA_BASE            = 0x0188 / 4,
     REG_VGA_LENGTH          = 0x018c / 4,
-    REG_PERF0_SEL           = 0x0200 / 4,
-    REG_PERF1_SEL           = 0x0204 / 4,
-    REG_PERF2_SEL           = 0x0208 / 4,
-    REG_PERF3_SEL           = 0x020c / 4,
-    REG_PERF0_VAL           = 0x0210 / 4,
-    REG_PERF1_VAL           = 0x0214 / 4,
-    REG_PERF2_VAL           = 0x0218 / 4,
-    REG_PERF3_VAL           = 0x021c / 4,
     REG_TIMER_INTERVAL      = 0x0240 / 4,
 };
